@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace MSOC.Backend.Api;
+namespace MSOC.Backend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TestApi : ControllerBase
+public class TestController : ControllerBase
 {
     [HttpGet("/healthcheck")]
     public IActionResult HealthCheck()
