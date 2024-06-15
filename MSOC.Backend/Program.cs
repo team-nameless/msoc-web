@@ -9,7 +9,11 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
     .AddAuthentication()
-    ;
+    .AddDiscord(opt =>
+    {
+        opt.ClientId = "owo";
+        opt.ClientSecret = "uwu";
+    });
 
 var app = builder.Build();
 
