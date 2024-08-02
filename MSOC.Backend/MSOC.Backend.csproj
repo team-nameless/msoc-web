@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AngleSharp" Version="1.1.2" />
         <PackageReference Include="AspNet.Security.OAuth.Discord" Version="8.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
