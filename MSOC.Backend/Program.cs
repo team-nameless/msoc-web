@@ -1,18 +1,44 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add config file
+builder.Configuration
+    .AddIniFile("config.ini")
+    .Build();
 
 // Add all API controller classes.
 // Don't know if Microsuck spaghetti code can do?
-builder.Services.AddControllers();
+builder.Services.AddControllers();  
 
 // Add crapwares to the controller
 builder.Services
+    .AddRouting()
     .AddEndpointsApiExplorer()
+    .AddHttpContextAccessor()
     .AddSwaggerGen()
-    .AddAuthentication()
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(opt =>
+    {
+        opt.LoginPath = "/api/user/login";
+        opt.LogoutPath = "/api/user/logout";
+        
+    })
     .AddDiscord(opt =>
     {
-        opt.ClientId = "owo";
-        opt.ClientSecret = "uwu";
+        opt.ClientId = builder.Configuration.GetValue<string>("Discord:CLIENT_ID") ?? "";
+        opt.ClientSecret = builder.Configuration.GetValue<string>("Discord:CLIENT_SECRET") ?? "";
+        
+        // https://github.com/aspnet-contrib/AspNet.Security.OAuth.Providers/issues/584
+        opt.ClaimActions.MapCustomJson("urn:discord:avatar:url", user =>
+            string.Format(
+                CultureInfo.InvariantCulture,
+                "https://cdn.discordapp.com/avatars/{0}/{1}.{2}",
+                user.GetString("id"),
+                user.GetString("avatar"),
+                user.GetString("avatar").StartsWith("a_") ? "gif" : "png"));
     });
 
 var app = builder.Build();
@@ -23,13 +49,16 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 app
+    .UseHsts()
     .UseRouting()
     .UseHttpsRedirection()
     .UseAuthentication()
-    .UseAuthorization();
+    .UseAuthorization()
+    .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
 
 app.MapControllers();
 app.Run();
