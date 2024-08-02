@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace MSOC.Backend.Controllers;
+namespace MSOC.Backend.Controller;
 
 [ApiController]
-[Route("[controller]")]
-public class TestController : ControllerBase
+[Route("api")]
+public class TestController : ControllerBase    
 {
-    [HttpGet("/healthcheck")]
+    [HttpGet("healthcheck")]
     public IActionResult HealthCheck()
     {
         return Ok("I am OK");
