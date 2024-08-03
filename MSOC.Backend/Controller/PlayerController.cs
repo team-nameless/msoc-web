@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Controller;
@@ -15,7 +15,7 @@ public class PlayerController : ControllerBase
     }
 
     [HttpPost("query")]
-    public async Task<IActionResult> QueryUserByFriendCode([FromForm] ulong? friendCode)
+    public async Task<IActionResult> QueryUserByFriendCode([FromBody] ulong friendCode)
     {
         var needed = await _maimai.PerformFriendCodeLookupAsync(friendCode);
 
