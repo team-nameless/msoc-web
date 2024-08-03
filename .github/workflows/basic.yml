@@ -20,10 +20,11 @@ jobs:
           dotnet-version: 8.x
           
       - name: Provide internal config file
+        shell: bash
         env:
           SUPER_CONFIG: ${{ secrets.CONFIG }}
         run: |
-          echo $SUPER_CONFIG > /home/runner/work/msoc-web/msoc-web/MSOC.Backend/config.ini
+          echo "$SUPER_CONFIG" > /home/runner/work/msoc-web/msoc-web/MSOC.Backend/config.ini
 
       - name: Restore NuGet packages
         run: dotnet restore
