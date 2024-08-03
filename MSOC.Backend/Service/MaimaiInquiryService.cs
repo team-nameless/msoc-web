@@ -42,7 +42,7 @@ public class MaimaiInquiryService
     /// </summary>
     /// <param name="friendCode">Friend code</param>
     /// <returns>Deserialized IElement[] array containing raw value of *what is needed*</returns>
-    public async Task<IElement[]> PerformFriendCodeLookup(ulong? friendCode)
+    public async Task<IElement[]> PerformFriendCodeLookupAsync(ulong friendCode)
     {
         var result = await _httpClient
             .GetAsync($"https://maimaidx-eng.com/maimai-mobile/friend/search/searchUser/?friendCode={friendCode}");

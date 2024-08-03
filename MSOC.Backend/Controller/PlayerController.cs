@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Controller;
@@ -17,12 +17,7 @@ public class PlayerController : ControllerBase
     [HttpPost("query")]
     public async Task<IActionResult> QueryUserByFriendCode([FromForm] ulong? friendCode)
     {
-        if (friendCode == null)
-        {
-            return BadRequest("Friend code is either null or empty.");
-        }
-
-        var needed = await _maimai.PerformFriendCodeLookup(friendCode);
+        var needed = await _maimai.PerformFriendCodeLookupAsync(friendCode);
 
         if (needed.Length == 0)
         {
