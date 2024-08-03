@@ -12,7 +12,7 @@ builder.Configuration
 
 // Add all API controller classes.
 // Don't know if Microsuck spaghetti code can do?
-builder.Services.AddControllers();  
+builder.Services.AddControllers();
 
 // Add crapwares to the controller
 builder.Services
@@ -68,4 +68,6 @@ app
 app.MapControllers();
 app.Run();
 
-public partial class Program {}
+public partial class Program
+{
+}

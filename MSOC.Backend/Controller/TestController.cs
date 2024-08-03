@@ -4,7 +4,7 @@ namespace MSOC.Backend.Controller;
 
 [ApiController]
 [Route("api")]
-public class TestController : ControllerBase    
+public class TestController : ControllerBase
 {
     [HttpGet("healthcheck")]
     public IActionResult HealthCheck()

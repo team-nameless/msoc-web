@@ -12,38 +12,29 @@ public class UserController : ControllerBase
     public IActionResult Login()
     {
         // If logged in, why even bother?
-        if (User.Identity?.IsAuthenticated ?? true)
-        {
-            return Redirect("/api/user/identity");
-        }
-        
+        if (User.Identity?.IsAuthenticated ?? true) return Redirect("/api/user/identity");
+
         return Challenge(new AuthenticationProperties { RedirectUri = "/api/user/identity" }, "Discord");
     }
 
     [HttpGet("logout")]
-    public IActionResult Logout()   
+    public IActionResult Logout()
     {
         // Not logged in.
-        if (!User.Identity?.IsAuthenticated ?? true)
-        {
-            return Redirect("/api/healthcheck");
-        }
-        
+        if (!User.Identity?.IsAuthenticated ?? true) return Redirect("/api/healthcheck");
+
         return SignOut(
             new AuthenticationProperties { RedirectUri = "/api/healthcheck" },
             CookieAuthenticationDefaults.AuthenticationScheme
-            );
+        );
     }
 
     [HttpGet("identity")]
     public IActionResult ShowIdentity()
     {
         // Not logged in.
-        if (!User.Identity?.IsAuthenticated ?? true)
-        {
-            return Redirect("/api/user/login");
-        }
-        
+        if (!User.Identity?.IsAuthenticated ?? true) return Redirect("/api/user/login");
+
         return new JsonResult(new Dictionary<string, string>
         {
             ["username"] = User.Identity?.Name ?? "anon",

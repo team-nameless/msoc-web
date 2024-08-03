@@ -7,8 +7,8 @@ namespace MSOC.Backend.Controller;
 [Route("api/player")]
 public class PlayerController : ControllerBase
 {
-    private MaimaiInquiryService _maimai;
-    
+    private readonly MaimaiInquiryService _maimai;
+
     public PlayerController(MaimaiInquiryService maimai)
     {
         _maimai = maimai;
@@ -19,11 +19,8 @@ public class PlayerController : ControllerBase
     {
         var needed = await _maimai.PerformFriendCodeLookupAsync(friendCode);
 
-        if (needed.Length == 0)
-        {
-            return BadRequest("Unable to retrieve needed information.");
-        }
-        
+        if (needed.Length == 0) return BadRequest("Unable to retrieve needed information.");
+
         var name = needed[0].TextContent;
         var rating = needed[1].TextContent;
 

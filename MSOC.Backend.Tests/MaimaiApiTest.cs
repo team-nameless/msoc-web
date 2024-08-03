@@ -5,13 +5,13 @@ namespace MSOC.Backend.Tests;
 
 public class MaimaiApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
-    private WebApplicationFactory<Program> _programFactory;
+    private readonly WebApplicationFactory<Program> _programFactory;
 
     public MaimaiApiTest(WebApplicationFactory<Program> programFactory)
     {
         _programFactory = programFactory;
     }
-    
+
     [Theory]
     [InlineData(1234)]
     [InlineData(69420)]
@@ -24,11 +24,11 @@ public class MaimaiApiTest : IClassFixture<WebApplicationFactory<Program>>
             "/api/player/query",
             friendCode
         );
-        
+
         Assert.StrictEqual(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal("Unable to retrieve needed information.", await response.Content.ReadAsStringAsync());
     }
-    
+
     [Theory]
     [InlineData(9051555929120)]
     [InlineData(8095773611588)]
@@ -41,10 +41,10 @@ public class MaimaiApiTest : IClassFixture<WebApplicationFactory<Program>>
             "/api/player/query",
             friendCode
         );
-        
+
         Assert.StrictEqual(HttpStatusCode.OK, response.StatusCode);
     }
-    
+
     [Theory]
     [InlineData(8069933165057)]
     public async Task ValidStrangerFriendCodeTest(ulong friendCode)
@@ -55,7 +55,7 @@ public class MaimaiApiTest : IClassFixture<WebApplicationFactory<Program>>
             "/api/player/query",
             friendCode
         );
-        
+
         Assert.StrictEqual(HttpStatusCode.OK, response.StatusCode);
     }
 }
