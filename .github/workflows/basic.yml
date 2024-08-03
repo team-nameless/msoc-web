@@ -18,6 +18,12 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 8.x
+          
+      - name: Provide internal config file
+        env:
+          SUPER_CONFIG: ${{ secrets.CONFIG }}
+        run: |
+          echo $SUPER_CONFIG > /home/runner/work/msoc-web/msoc-web/MSOC.Backend/config.ini
 
       - name: Restore NuGet packages
         run: dotnet restore
