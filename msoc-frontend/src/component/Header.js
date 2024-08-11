@@ -28,12 +28,12 @@ export default function Header() {
 					</a>
 				</div>
 				<div className=" justify-end ">
-					<div className="flex bg-blue-600 rounded-lg px-1 py-1 w-28 space-x-2 items-center justify-center">
+					<button className="flex bg-blue-600 rounded-lg px-1 py-1 w-28 space-x-2 items-center justify-center">
 						<FaDiscord className="text-white jutsify-center text-xl" />
 						<a href="/" className="text-lg font-semibold leading-6 text-white justify-center">
 							Discord
 						</a>
-					</div>
+					</button>
 				</div>
 			</nav>
 		</header>

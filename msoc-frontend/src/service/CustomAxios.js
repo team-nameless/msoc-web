@@ -1,7 +1,10 @@
 import axios from "axios";
 
+//Port to connect API BE
+const Port = 3000;
+
 const instance = axios.create({
-	baseURL: "https://localhost:Port/",
+	baseURL: `https://localhost:${Port}/`,
 });
 
 instance.interceptors.request.use(
