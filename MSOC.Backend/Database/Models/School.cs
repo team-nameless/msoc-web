@@ -1,12 +1,11 @@
-namespace MSOC.Backend.Database.Models
+namespace MSOC.Backend.Database.Models;
+
+/// <summary>
+///     Representing a school.
+/// </summary>
+public class School
 {
-    /// <summary>
-    /// Representing a school.
-    /// </summary>
-    public class School
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Alias { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Alias { get; set; }
 }
