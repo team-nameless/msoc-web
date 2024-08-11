@@ -1,1 +1,7 @@
-﻿config.ini
+﻿# Duh.
+config.ini
+
+# Database stuffs.
+MSOC.db
+MSOC.db-shm
+MSOC.db-wal
