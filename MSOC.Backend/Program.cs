@@ -27,7 +27,7 @@ builder.Services
             .EnableDetailedErrors()
 #endif
             .UseSqlite(new SqliteConnection(
-                $"Data Source=MSOC.db;" + 
+                $"Data Source=MSOC.db;" +
                 $"Password={builder.Configuration.GetValue<string>("Database:PASSWORD")};"
             ));
     })
