@@ -12,11 +12,11 @@ builder.Configuration
     .AddIniFile("config.ini")
     .Build();
 
-// Add all API controller classes.
-// Don't know if Microsuck spaghetti code can do?
+// :thinking:
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
-// Add crapwares to the controller
+// Add crapwares to the controller    
 builder.Services
     .AddSingleton<MaimaiInquiryService>()
     .AddDbContext<DatabaseService>(x =>
