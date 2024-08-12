@@ -1,8 +1,6 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,18 +17,7 @@ builder.Services.AddSignalR();
 // Add crapwares to the controller    
 builder.Services
     .AddSingleton<MaimaiInquiryService>()
-    .AddDbContext<DatabaseService>(x =>
-    {
-        x
-#if DEBUG
-            .EnableSensitiveDataLogging()
-            .EnableDetailedErrors()
-#endif
-            .UseSqlite(new SqliteConnection(
-                $"Data Source=MSOC.db;" +
-                $"Password={builder.Configuration.GetValue<string>("Database:PASSWORD")};"
-            ));
-    })
+    .AddDbContext<DatabaseService>()
     .AddRouting()
     .AddEndpointsApiExplorer()
     .AddHttpContextAccessor()
