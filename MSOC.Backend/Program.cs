@@ -1,6 +1,3 @@
-using System.Globalization;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using MSOC.Backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,27 +18,7 @@ builder.Services
     .AddRouting()
     .AddEndpointsApiExplorer()
     .AddHttpContextAccessor()
-    .AddSwaggerGen()
-    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(opt =>
-    {
-        opt.LoginPath = "/api/user/login";
-        opt.LogoutPath = "/api/user/logout";
-    })
-    .AddDiscord(opt =>
-    {
-        opt.ClientId = builder.Configuration.GetValue<string>("Discord:CLIENT_ID") ?? "";
-        opt.ClientSecret = builder.Configuration.GetValue<string>("Discord:CLIENT_SECRET") ?? "";
-
-        // https://github.com/aspnet-contrib/AspNet.Security.OAuth.Providers/issues/584
-        opt.ClaimActions.MapCustomJson("urn:discord:avatar:url", user =>
-            string.Format(
-                CultureInfo.InvariantCulture,
-                "https://cdn.discordapp.com/avatars/{0}/{1}.{2}",
-                user.GetString("id"),
-                user.GetString("avatar"),
-                user.GetString("avatar")!.StartsWith("a_") ? "gif" : "png"));
-    });
+    .AddSwaggerGen();
 
 // Enable services at startup time.
 builder.Services
@@ -62,8 +39,6 @@ app
     .UseHsts()
     .UseRouting()
     .UseHttpsRedirection()
-    .UseAuthentication()
-    .UseAuthorization()
     .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
 
 app.MapControllers();
