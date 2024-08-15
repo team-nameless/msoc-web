@@ -26,7 +26,7 @@ public class Player
     public int SchoolId { get; set; }
 
     /// <summary>
-    ///     Whether this user is a leader for their team.
+    ///     Whether this player is a leader for their team.
     /// </summary>
     public bool IsLeader { get; set; }
 
@@ -44,4 +44,9 @@ public class Player
     ///     The team this player belongs to.
     /// </summary>
     public Team Team { get; set; } = null!;
+    
+    /// <summary>
+    ///     Get the time when this player's submission was accepted. 
+    /// </summary>
+    public DateTime DateOfAdmission { get; set; }
 }
