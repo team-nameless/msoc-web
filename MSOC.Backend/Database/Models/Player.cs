@@ -6,14 +6,9 @@ namespace MSOC.Backend.Database.Models;
 public class Player
 {
     /// <summary>
-    ///     Discord user ID.
+    ///     maimai Friend code associated with this user.
     /// </summary>
     public ulong Id { get; set; }
-
-    /// <summary>
-    ///     Friend code associated with this user.
-    /// </summary>
-    public ulong FriendCode { get; set; }
 
     /// <summary>
     ///     maimai username.
