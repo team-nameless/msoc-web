@@ -46,16 +46,6 @@ public class Player
     public float Sub2 { get; set; }
 
     /// <summary>
-    ///     Achievement% score of TRACK 3
-    /// </summary>
-    public float Sub3 { get; set; }
-
-    /// <summary>
-    ///     Total DX score.
-    /// </summary>
-    public int TotalDeluxeScore { get; set; }
-
-    /// <summary>
     ///     The team this player belongs to.
     /// </summary>
     public Team Team { get; set; } = null!;
