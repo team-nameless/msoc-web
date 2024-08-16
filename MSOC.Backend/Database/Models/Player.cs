@@ -21,7 +21,7 @@ public class Player
     public int Rating { get; set; }
 
     /// <summary>
-    ///     idk
+    ///     From which school is this player from?
     /// </summary>
     public int SchoolId { get; set; }
 
