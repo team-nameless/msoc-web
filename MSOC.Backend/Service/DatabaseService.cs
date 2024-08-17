@@ -10,13 +10,6 @@ namespace MSOC.Backend.Service;
 /// </summary>
 public class DatabaseService : DbContext
 {
-    private readonly IConfiguration _configuration;
-
-    public DatabaseService(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
     public DbSet<Player> Players { get; set; }
     public DbSet<Team> Teams { get; set; }
     public DbSet<School> Schools { get; set; }
