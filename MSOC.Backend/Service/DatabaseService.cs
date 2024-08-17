@@ -29,10 +29,7 @@ public class DatabaseService : DbContext
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
 #endif
-                .UseSqlite(new SqliteConnection(
-                    $"Data Source=MSOC.db;" +
-                    $"Password={_configuration.GetValue<string>("Database:PASSWORD")};"
-                ))
+                .UseSqlite(new SqliteConnection("Data Source=MSOC.db;"))
         );
     }
 }

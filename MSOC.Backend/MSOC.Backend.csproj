@@ -21,7 +21,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.AutoActivation" Version="8.7.0"/>
-        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.9"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
