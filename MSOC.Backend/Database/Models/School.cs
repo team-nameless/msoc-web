@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace MSOC.Backend.Database.Models;
 
 /// <summary>
@@ -6,19 +8,24 @@ namespace MSOC.Backend.Database.Models;
 public class School
 {
     /// <summary>
-    /// School Id because we need a primary key.
+    ///     School ID.
+    ///     Should be AUTO_INCREMENT I suppose.
     /// </summary>
-    public int Id { get; set; } // AUTO_INCREMENT
+    public int Id { get; set; }
 
     /// <summary>
-    /// School name.
+    ///     School name.
     /// </summary>
-    public string Name { get; set; }
-    
-    /// <summary>
-    /// School type (3=High school, 4=College/University, whatever your english).
-    /// </summary>
-    public int Type {get; set;}
+    [MaxLength(255)]
+    public required string Name { get; set; }
 
-    public Team Team;
+    /// <summary>
+    ///     School type (3=High school, 4=College/University, whatever your english).
+    /// </summary>
+    public int Type { get; set; }
+
+    /// <summary>
+    ///     The team which this school belongs to, mostly for relationship, don't care about it.
+    /// </summary>
+    public required Team Team { get; set; }
 }

@@ -20,6 +20,7 @@ public class DatabaseService : DbContext
     public DbSet<Player> Players { get; set; }
     public DbSet<Team> Teams { get; set; }
     public DbSet<School> Schools { get; set; }
+    public DbSet<Score> Scores { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

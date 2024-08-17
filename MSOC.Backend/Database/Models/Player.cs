@@ -21,7 +21,9 @@ public class Player
     public int Rating { get; set; }
 
     /// <summary>
-    ///     From which school is this player from?
+    ///     From which school is this player from.
+    ///     The reason why this is NOT the concrete type <see cref="School" />
+    ///     because it would fuck around with the relationship.
     /// </summary>
     public int SchoolId { get; set; }
 
@@ -31,22 +33,7 @@ public class Player
     public bool IsLeader { get; set; }
 
     /// <summary>
-    ///     Achievement% score of TRACK 1
-    /// </summary>
-    public float Sub1 { get; set; }
-
-    /// <summary>
-    ///     Achievement% score of TRACK 2
-    /// </summary>
-    public float Sub2 { get; set; }
-
-    /// <summary>
     ///     The team this player belongs to.
     /// </summary>
-    public Team Team { get; set; } = null!;
-    
-    /// <summary>
-    ///     Get the time when this player's submission was accepted. 
-    /// </summary>
-    public DateTime DateOfAdmission { get; set; }
+    public required Team Team { get; set; }
 }

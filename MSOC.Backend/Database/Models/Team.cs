@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations;
+using JetBrains.Annotations;
+
 namespace MSOC.Backend.Database.Models;
 
 /// <summary>
@@ -6,27 +9,26 @@ namespace MSOC.Backend.Database.Models;
 public class Team
 {
     /// <summary>
-    ///     Members associated with this team.
-    /// </summary>
-    public ICollection<Player> Members = new List<Player>();
-
-    /// <summary>
     ///     Team ID.
+    ///     Should be AUTO_INCREMENT I suppose.
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    ///     Team name, usually the school name.
+    ///     Team name.
     /// </summary>
-    public string Name { get; set; }
+    [MaxLength(255)]
+    public required string Name { get; set; }
 
     /// <summary>
-    ///     idk.
+    ///     Members associated with this team.
     /// </summary>
-    public int SchoolId { get; set; }
+    [CollectionAccess(CollectionAccessType.Read)]
+    public ICollection<Player> Members { get; } = new List<Player>();
 
     /// <summary>
-    ///     idk.
+    ///     Schools associated with this team.
     /// </summary>
-    public int Group { get; set; }
+    [CollectionAccess(CollectionAccessType.Read)]
+    public ICollection<School> Schools { get; } = new List<School>();
 }
