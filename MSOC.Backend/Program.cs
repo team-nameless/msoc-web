@@ -22,6 +22,7 @@ builder.Services
 
 // Enable services at startup time.
 builder.Services
+    .ActivateSingleton<IConfiguration>()
     .ActivateSingleton<MaimaiInquiryService>();
 
 var app = builder.Build();
