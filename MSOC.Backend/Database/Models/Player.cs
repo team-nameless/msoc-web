@@ -21,13 +21,6 @@ public class Player
     public int Rating { get; set; }
 
     /// <summary>
-    ///     From which school is this player from.
-    ///     The reason why this is NOT the concrete type <see cref="School" />
-    ///     because it would fuck around with the relationship.
-    /// </summary>
-    public int SchoolId { get; set; }
-
-    /// <summary>
     ///     Whether this player is a leader for their team.
     /// </summary>
     public bool IsLeader { get; set; }
@@ -36,4 +29,9 @@ public class Player
     ///     The team this player belongs to.
     /// </summary>
     public required Team Team { get; set; }
+
+    /// <summary>
+    ///     The school this player belongs to.
+    /// </summary>
+    public required School School { get; set; }
 }
