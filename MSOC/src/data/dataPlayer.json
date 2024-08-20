@@ -1,0 +1,30 @@
+[
+	{
+		"_id": 1,
+		"name": "Phan Xuan Thai",
+		"chart1": 101,
+		"chart2": 100,
+		"dx": 0
+	},
+	{
+		"_id": 2,
+		"name": "Phan Xuan Dat",
+		"chart1": 99.99,
+		"chart2": 101,
+		"dx": 0
+	},
+	{
+		"_id": 3,
+		"name": "Phan Xuan Tu",
+		"chart1": 98.99,
+		"chart2": 101,
+		"dx": 0
+	},
+	{
+		"_id": 4,
+		"name": "Phan Xuan Hoi",
+		"chart1": 101,
+		"chart2": 101,
+		"dx": 0
+	}
+]
