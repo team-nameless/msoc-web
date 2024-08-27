@@ -1,3 +1,6 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using MSOC.Backend.Service;
 using Xunit.DependencyInjection.AspNetCoreTesting;
 
