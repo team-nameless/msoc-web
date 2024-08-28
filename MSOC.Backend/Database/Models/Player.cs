@@ -31,10 +31,15 @@ public class Player
     /// <summary>
     ///     The team this player belongs to.
     /// </summary>
-    public required Team Team { get; set; }
+    public Team? Team { get; set; }
 
     /// <summary>
     ///     The school this player belongs to.
     /// </summary>
-    public required School School { get; set; }
+    public School? School { get; set; }
+    
+    /// <summary>
+    ///     The score associated with this player.
+    /// </summary>
+    public Score? Score { get; set; }
 }

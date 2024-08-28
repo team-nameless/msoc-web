@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using JetBrains.Annotations;
 
 namespace MSOC.Backend.Database.Models;
 
@@ -23,12 +22,5 @@ public class Team
     /// <summary>
     ///     Members associated with this team.
     /// </summary>
-    [CollectionAccess(CollectionAccessType.Read)]
-    public ICollection<Player> Members { get; } = new List<Player>();
-
-    /// <summary>
-    ///     Schools associated with this team.
-    /// </summary>
-    [CollectionAccess(CollectionAccessType.Read)]
-    public ICollection<School> Schools { get; } = new List<School>();
+    public ICollection<Player> Players { get; } = new List<Player>();
 }

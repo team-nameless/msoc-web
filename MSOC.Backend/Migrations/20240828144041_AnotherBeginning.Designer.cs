@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MSOC.Backend.Migrations
 {
     [DbContext(typeof(DatabaseService))]
-    [Migration("20240828022110_AddUsernameLengthLimit")]
-    partial class AddUsernameLengthLimit
+    [Migration("20240828144041_AnotherBeginning")]
+    partial class AnotherBeginning
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,10 +32,10 @@ namespace MSOC.Backend.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("SchoolId")
+                    b.Property<int?>("SchoolId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TeamId")
+                    b.Property<int?>("TeamId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Username")
@@ -63,15 +63,10 @@ namespace MSOC.Backend.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("TeamId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TeamId");
 
                     b.ToTable("Schools");
                 });
@@ -82,21 +77,34 @@ namespace MSOC.Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("DateOfAcceptance")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("DateOfAdmission")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("DxScore1")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DxScore2")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("INTEGER");
 
                     b.Property<ulong>("PlayerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<float>("Sub1")
+                    b.Property<double>("Sub1")
                         .HasColumnType("REAL");
 
-                    b.Property<float>("Sub2")
+                    b.Property<double>("Sub2")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("PlayerId")
+                        .IsUnique();
 
                     b.ToTable("Scores");
                 });
@@ -121,28 +129,13 @@ namespace MSOC.Backend.Migrations
                 {
                     b.HasOne("MSOC.Backend.Database.Models.School", "School")
                         .WithMany()
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SchoolId");
 
                     b.HasOne("MSOC.Backend.Database.Models.Team", "Team")
-                        .WithMany("Members")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Players")
+                        .HasForeignKey("TeamId");
 
                     b.Navigation("School");
-
-                    b.Navigation("Team");
-                });
-
-            modelBuilder.Entity("MSOC.Backend.Database.Models.School", b =>
-                {
-                    b.HasOne("MSOC.Backend.Database.Models.Team", "Team")
-                        .WithMany("Schools")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Team");
                 });
@@ -150,19 +143,22 @@ namespace MSOC.Backend.Migrations
             modelBuilder.Entity("MSOC.Backend.Database.Models.Score", b =>
                 {
                     b.HasOne("MSOC.Backend.Database.Models.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
+                        .WithOne("Score")
+                        .HasForeignKey("MSOC.Backend.Database.Models.Score", "PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Player");
                 });
 
+            modelBuilder.Entity("MSOC.Backend.Database.Models.Player", b =>
+                {
+                    b.Navigation("Score");
+                });
+
             modelBuilder.Entity("MSOC.Backend.Database.Models.Team", b =>
                 {
-                    b.Navigation("Members");
-
-                    b.Navigation("Schools");
+                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

@@ -24,9 +24,4 @@ public class School
     ///     School type.
     /// </summary>
     public SchoolType Type { get; set; }
-
-    /// <summary>
-    ///     The team which this school belongs to, mostly for relationship, don't care about it.
-    /// </summary>
-    public required Team Team { get; set; }
 }
