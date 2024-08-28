@@ -4,8 +4,8 @@ namespace MSOC.Backend.Tests.Unit;
 
 public class DatabaseServiceTest
 {
-    private DatabaseService _database;
-    
+    private readonly DatabaseService _database;
+
     public DatabaseServiceTest(DatabaseService database)
     {
         _database = database;

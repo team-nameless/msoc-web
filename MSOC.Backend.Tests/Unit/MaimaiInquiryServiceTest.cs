@@ -1,12 +1,11 @@
-﻿using AngleSharp.Dom;
-using MSOC.Backend.Service;
+﻿using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Tests.Unit;
 
 public class MaimaiInquiryServiceTest
 {
-    private MaimaiInquiryService _maimai;
-    
+    private readonly MaimaiInquiryService _maimai;
+
     public MaimaiInquiryServiceTest(MaimaiInquiryService maimai)
     {
         _maimai = maimai;
@@ -18,7 +17,7 @@ public class MaimaiInquiryServiceTest
     [InlineData(177013)]
     public async Task InvalidFriendCodeTest(ulong friendCode)
     {
-        IElement[] result = await _maimai.PerformFriendCodeLookupAsync(friendCode);
+        var result = await _maimai.PerformFriendCodeLookupAsync(friendCode);
 
         Assert.StrictEqual(0, result.Length);
     }
@@ -29,7 +28,7 @@ public class MaimaiInquiryServiceTest
     [InlineData(9020119099087)]
     public async Task ValidFamiliarFriendCodeTest(ulong friendCode)
     {
-        IElement[] result = await _maimai.PerformFriendCodeLookupAsync(friendCode);
+        var result = await _maimai.PerformFriendCodeLookupAsync(friendCode);
 
         Assert.StrictEqual(2, result.Length);
     }
@@ -38,7 +37,7 @@ public class MaimaiInquiryServiceTest
     [InlineData(8069933165057)]
     public async Task ValidStrangerFriendCodeTest(ulong friendCode)
     {
-        IElement[] result = await _maimai.PerformFriendCodeLookupAsync(friendCode);
+        var result = await _maimai.PerformFriendCodeLookupAsync(friendCode);
 
         Assert.StrictEqual(2, result.Length);
     }

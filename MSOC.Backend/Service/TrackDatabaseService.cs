@@ -2,37 +2,36 @@
 using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Database.Models;
 
-namespace MSOC.Backend.Service
+namespace MSOC.Backend.Service;
+
+public class TrackDatabaseService : DbContext
 {
-    public class TrackDatabaseService : DbContext
+    public DbSet<Track> Tracks { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        public DbSet<Track> Tracks{ get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(
-                optionsBuilder
+        base.OnConfiguring(
+            optionsBuilder
 #if DEBUG
-                    .EnableDetailedErrors()
-                    .EnableSensitiveDataLogging()
+                .EnableDetailedErrors()
+                .EnableSensitiveDataLogging()
 #endif
-                    .UseSqlite(new SqliteConnection("Data Source=tracks.db;"))
-            );
-        }
+                .UseSqlite(new SqliteConnection("Data Source=tracks.db;"))
+        );
+    }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Track>()
-                .Property(track => track.Id)
-                .ValueGeneratedOnAdd();
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Track>()
+            .Property(track => track.Id)
+            .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Track>()
-                .Property(track => track.Difficulty)
-                .HasConversion<int>();
+        modelBuilder.Entity<Track>()
+            .Property(track => track.Difficulty)
+            .HasConversion<int>();
 
-            modelBuilder.Entity<Track>()
-                .Property(track => track.Type)
-                .HasConversion<int>();
-        }
+        modelBuilder.Entity<Track>()
+            .Property(track => track.Type)
+            .HasConversion<int>();
     }
 }
