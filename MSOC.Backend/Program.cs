@@ -15,6 +15,7 @@ builder.Services.AddSignalR();
 builder.Services
     .AddSingleton<MaimaiInquiryService>()
     .AddDbContext<DatabaseService>()
+    .AddDbContext<TrackDatabaseService>()
     .AddRouting()
     .AddEndpointsApiExplorer()
     .AddHttpContextAccessor()
