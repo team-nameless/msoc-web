@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace MSOC.Backend.Database.Models;
 
 /// <summary>
@@ -13,7 +15,8 @@ public class Player
     /// <summary>
     ///     maimai username.
     /// </summary>
-    public string Username { get; set; }
+    [MaxLength(16)]
+    public required string Username { get; set; }
 
     /// <summary>
     ///     maimai rating.
