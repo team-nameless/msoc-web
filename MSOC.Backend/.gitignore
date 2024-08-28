@@ -5,3 +5,7 @@ config.ini
 *.db
 *.db-shm
 *.db-wal
+
+# We make an exclusion for tracks database.
+# Composing this is a real pain in the ass.
+!tracks.db
