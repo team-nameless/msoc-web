@@ -9,3 +9,6 @@ config.ini
 # We make an exclusion for tracks database.
 # Composing this is a real pain in the ass.
 !tracks.db
+
+# Shhh...
+Scripts/MSOC raw track list.csv
