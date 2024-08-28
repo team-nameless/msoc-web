@@ -8,7 +8,7 @@ namespace MSOC.Backend.Tests;
 
 public class Startup
 {
-    [JetBrains.Annotations.UsedImplicitly]
+    // ReSharper disable once UnusedMember.Global
     public IHostBuilder CreateHostBuilder() => MinimalApiHostBuilderFactory.GetHostBuilder<Program>();
 
     public void ConfigureServices(IServiceCollection services)
