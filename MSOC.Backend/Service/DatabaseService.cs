@@ -26,4 +26,11 @@ public class DatabaseService : DbContext
                 .UseSqlite(new SqliteConnection("Data Source=MSOC.db;"))
         );
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<School>()
+            .Property(school => school.Type)
+            .HasConversion<int>();
+    }
 }

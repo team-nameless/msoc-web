@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using MSOC.Backend.Enum;
 
 namespace MSOC.Backend.Database.Models;
 
@@ -20,9 +21,9 @@ public class School
     public required string Name { get; set; }
 
     /// <summary>
-    ///     School type (3=High school, 4=College/University, whatever your english).
+    ///     School type.
     /// </summary>
-    public int Type { get; set; }
+    public SchoolType Type { get; set; }
 
     /// <summary>
     ///     The team which this school belongs to, mostly for relationship, don't care about it.
