@@ -15,27 +15,6 @@ public class TrackController : ControllerBase
         _trackDatabase = trackDatabase;
     }
 
-    [HttpPost("add")]
-    public IActionResult AddTrack([FromBody] Track track)
-    {
-        _trackDatabase.Tracks.Add(new Track
-        {
-            Title = track.Title,
-            Artist = track.Artist,
-            Category = track.Category,
-            Constant = track.Constant,
-            CoverImageUrl = track.CoverImageUrl,
-            Difficulty = track.Difficulty,
-            Version = track.Version,
-            Type = track.Type,
-            HasBeenPicked = false
-        });
-
-        _trackDatabase.SaveChanges();
-
-        return Ok();
-    }
-
     [HttpGet("select")]
     public IActionResult SelectTracks(
         [FromQuery(Name = "min_diff")] double minDiff = 1.0,
