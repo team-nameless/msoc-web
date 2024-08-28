@@ -1,33 +1,32 @@
-﻿namespace MSOC.Backend.Enum
+﻿namespace MSOC.Backend.Enum;
+
+/// <summary>
+///     maimai track difficulty.
+/// </summary>
+public enum TrackDifficulty
 {
     /// <summary>
-    ///     maimai track difficulty.
+    ///     maimai BASIC difficulty.
     /// </summary>
-    public enum TrackDifficulty
-    {
-        /// <summary>
-        ///     maimai BASIC difficulty.
-        /// </summary>
-        Basic,
+    Basic,
 
-        /// <summary>
-        ///     maimai ADVANCED difficulty.
-        /// </summary>
-        Advanced,
+    /// <summary>
+    ///     maimai ADVANCED difficulty.
+    /// </summary>
+    Advanced,
 
-        /// <summary>
-        ///     maimai EXPERT difficulty.
-        /// </summary>
-        Expert,
+    /// <summary>
+    ///     maimai EXPERT difficulty.
+    /// </summary>
+    Expert,
 
-        /// <summary>
-        ///     maimai MASTER difficulty.
-        /// </summary>
-        Master,
+    /// <summary>
+    ///     maimai MASTER difficulty.
+    /// </summary>
+    Master,
 
-        /// <summary>
-        ///     maimai Re:MASTER difficulty.
-        /// </summary>
-        ReMaster
-    }
+    /// <summary>
+    ///     maimai Re:MASTER difficulty.
+    /// </summary>
+    ReMaster
 }

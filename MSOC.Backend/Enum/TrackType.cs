@@ -1,18 +1,17 @@
-﻿namespace MSOC.Backend.Enum
+﻿namespace MSOC.Backend.Enum;
+
+/// <summary>
+///     maimai TRACK type.
+/// </summary>
+public enum TrackType
 {
     /// <summary>
-    ///     maimai TRACK type.
+    ///     maimai ST track.
     /// </summary>
-    public enum TrackType
-    {
-        /// <summary>
-        ///     maimai ST track.
-        /// </summary>
-        Standard,
+    Standard,
 
-        /// <summary>
-        ///     maimai DX track.
-        /// </summary>
-        Deluxe
-    }
+    /// <summary>
+    ///     maimai DX track.
+    /// </summary>
+    Deluxe
 }
