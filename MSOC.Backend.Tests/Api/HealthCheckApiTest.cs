@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSOC.Backend.Controller;
 
-namespace MSOC.Backend.Tests;
+namespace MSOC.Backend.Tests.Api;
 
 public class HealthCheckApiTest
 {

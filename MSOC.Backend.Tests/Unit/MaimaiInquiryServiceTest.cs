@@ -1,23 +1,21 @@
 ﻿using MSOC.Backend.Service;
+using Xunit.Abstractions;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace MSOC.Backend.Tests.Unit;
 
-public class MaimaiInquiryServiceTest
+[CollectionDefinition("Dependency Injection")]
+public class MaimaiInquiryServiceTest(ITestOutputHelper testOutputHelper, BackendTestBedFixture fixture) 
+    : TestBed<BackendTestBedFixture>(testOutputHelper, fixture)
 {
-    private readonly MaimaiInquiryService _maimai;
-
-    public MaimaiInquiryServiceTest(MaimaiInquiryService maimai)
-    {
-        _maimai = maimai;
-    }
-
     [Theory]
     [InlineData(1234)]
     [InlineData(69420)]
     [InlineData(177013)]
     public async Task InvalidFriendCodeTest(ulong friendCode)
     {
-        var result = await _maimai.PerformFriendCodeLookupAsync(friendCode);
+        var maimai = _fixture.GetService<MaimaiInquiryService>(_testOutputHelper)!;
+        var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
 
         Assert.StrictEqual(0, result.Length);
     }
@@ -28,7 +26,8 @@ public class MaimaiInquiryServiceTest
     [InlineData(9020119099087)]
     public async Task ValidFamiliarFriendCodeTest(ulong friendCode)
     {
-        var result = await _maimai.PerformFriendCodeLookupAsync(friendCode);
+        var maimai = _fixture.GetService<MaimaiInquiryService>(_testOutputHelper)!;
+        var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
 
         Assert.StrictEqual(2, result.Length);
     }
@@ -37,7 +36,8 @@ public class MaimaiInquiryServiceTest
     [InlineData(8069933165057)]
     public async Task ValidStrangerFriendCodeTest(ulong friendCode)
     {
-        var result = await _maimai.PerformFriendCodeLookupAsync(friendCode);
+        var maimai = _fixture.GetService<MaimaiInquiryService>(_testOutputHelper)!;
+        var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
 
         Assert.StrictEqual(2, result.Length);
     }
