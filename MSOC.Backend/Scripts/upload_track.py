@@ -45,7 +45,7 @@ def send_request(
     headers = {"Content-type": "application/json"}
 
     http_handler = HTTPConnection("localhost", 5246, timeout=10000)
-    http_handler.request("POST", "/api/tracks/add", json.dumps(body), headers)
+    http_handler.request("POST", "/api/admin/add-track", json.dumps(body), headers)
 
     print(f"Sent {body} to the database!")
     

@@ -4,6 +4,10 @@ using MSOC.Backend.Database.Models;
 
 namespace MSOC.Backend.Service;
 
+/// <summary>
+///     A track database, well, for interacting with tracks.
+///     Meant to be used with DI.
+/// </summary>
 public class TrackDatabaseService : DbContext
 {
     public DbSet<Track> Tracks { get; set; }

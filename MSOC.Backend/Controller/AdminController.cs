@@ -10,19 +10,21 @@ namespace MSOC.Backend.Controller;
 [Route("api")]
 public class AdminController : ControllerBase
 {
-    private readonly DatabaseService _database;
+    private readonly GameDatabaseService _gameDatabase;
     private readonly TrackDatabaseService _trackDatabase;
-
-    public AdminController(DatabaseService database, TrackDatabaseService trackDatabase)
+    private readonly SchoolDatabaseService _schoolDatabase;
+    
+    public AdminController(GameDatabaseService gameDatabase, TrackDatabaseService trackDatabase, SchoolDatabaseService schoolDatabase)
     {
-        _database = database;
+        _gameDatabase = gameDatabase;
         _trackDatabase = trackDatabase;
+        _schoolDatabase = schoolDatabase;
     }
     
     [HttpPost("admin/add-player")]
     public IActionResult AddPlayer([FromBody] PlayerRequestModel player)
     {
-        _database.Players.Add(new Player
+        _gameDatabase.Players.Add(new Player
         {
             Id = player.Id,
             IsLeader = player.IsLeader,
@@ -30,7 +32,7 @@ public class AdminController : ControllerBase
             Username = player.Username,
         });
         
-        _database.SaveChanges();
+        _gameDatabase.SaveChanges();
 
         return Ok();
     }
@@ -38,13 +40,13 @@ public class AdminController : ControllerBase
     [HttpPost("admin/add-school")]
     public IActionResult AddSchool([FromBody] SchoolRequestModel school)
     {
-        _database.Schools.Add(new School
+        _schoolDatabase.Schools.Add(new School
         {
             Name = school.Name,
             Type = school.Type
         });
         
-        _database.SaveChanges();
+        _schoolDatabase.SaveChanges();
 
         return Ok();
     }
@@ -52,7 +54,7 @@ public class AdminController : ControllerBase
     [HttpPost("admin/add-score/")]
     public IActionResult AddScore([FromBody] ScoreRequestModel score)
     {
-        _database.Scores.Add(new Score
+        _gameDatabase.Scores.Add(new Score
         {
             IsAccepted = false,
             PlayerId = score.PlayerId,
@@ -63,7 +65,7 @@ public class AdminController : ControllerBase
             DateOfAdmission = DateTime.Now,
         });
         
-        _database.SaveChanges();
+        _gameDatabase.SaveChanges();
 
         return Ok();
     }
@@ -71,77 +73,17 @@ public class AdminController : ControllerBase
     [HttpPost("admin/add-team")]
     public IActionResult AddTeam([FromBody] TeamRequestModel team)
     {
-        _database.Teams.Add(new Team
+        _gameDatabase.Teams.Add(new Team
         {
-            Name = team.Name,
-            Players = {  }
+            Name = team.Name
         });
         
-        _database.SaveChanges();
+        _gameDatabase.SaveChanges();
 
         return Ok();
     }
     
-    [HttpGet("admin/bind-team")]
-    public IActionResult BindTeamToPlayer(int teamId, ulong playerId)
-    {
-        Team t = _database.Teams.First(t => t.Id == teamId);
-        Player p = _database.Players.First(p => p.Id == playerId);
-        
-        t.Players.Add(p);
-        p.Team = t;
-        
-        _database.SaveChanges();
-
-        return Ok();
-    }
-    
-    [HttpGet("admin/bind-school")]
-    public IActionResult BindSchoolToPlayer(int schoolId, ulong playerId)
-    {
-        School s = _database.Schools.First(s => s.Id == schoolId);
-        Player p = _database.Players.First(p => p.Id == playerId);
-        
-        p.School = s;
-        
-        _database.SaveChanges();
-
-        return Ok();
-    }
-    
-    [HttpGet("admin/approve-score")]
-    public IActionResult ApproveScore(ulong scoreId)
-    {
-        var scores = _database.Scores.Where(score => score.Id == scoreId);
-        
-        var player = _database.Players
-            .Include(p => p.Team)
-            .Include(p => p.School)
-            .Include(p => p.Score)
-            .First(p => p.Id == 6969);
-
-        foreach (var score in scores)
-        {
-            score.IsAccepted = true;
-            score.DateOfAcceptance = DateTime.Now;
-        }
-
-        // Do an update on the entire database.
-        var _ = _database.Scores
-            .Where(score => score.IsAccepted)
-            .OrderByDescending(score => score.Sub1 + score.Sub2)
-            .ThenByDescending(score => score.DxScore1 + score.DxScore2)
-            .ThenBy(score => score.DateOfAdmission);
-
-        // TODO: Hit the SignalR endpoint to yell at the front end.
-
-        // TODO: might not need this fr fr
-        // _database.SaveChanges();
-
-        return Ok();
-    }
-
-    [HttpPost("tracks/add")]
+    [HttpPost("admin/add-track")]
     public IActionResult AddTrack([FromBody] TrackAdditionRequestModel track)
     {
         _trackDatabase.Tracks.Add(new Track
@@ -158,6 +100,64 @@ public class AdminController : ControllerBase
         }); 
         
         _trackDatabase.SaveChanges();
+
+        return Ok();
+    }
+    
+    [HttpGet("admin/bind-team")]
+    public IActionResult BindTeamToPlayer(int teamId, ulong playerId)
+    {
+        Team t = _gameDatabase.Teams.First(t => t.Id == teamId);
+        Player p = _gameDatabase.Players.First(p => p.Id == playerId);
+        
+        t.Players.Add(p);
+        p.Team = t;
+        
+        _gameDatabase.SaveChanges();
+
+        return Ok();
+    }
+    
+    [HttpGet("admin/bind-school")]
+    public IActionResult BindSchoolToPlayer(int schoolId, ulong playerId)
+    {
+        School s = _schoolDatabase.Schools.First(s => s.Id == schoolId);
+        Player p = _gameDatabase.Players.First(p => p.Id == playerId);
+        
+        p.SchoolId = s.Id;
+        
+        _gameDatabase.SaveChanges();
+
+        return Ok();
+    }
+    
+    [HttpGet("leaderboard/approve")]
+    public IActionResult ApproveScore(ulong scoreId)
+    {
+        var scores = _gameDatabase.Scores.Where(score => score.Id == scoreId);
+        
+        var player = _gameDatabase.Players
+            .Include(p => p.Team)
+            .Include(p => p.SchoolId)
+            .Include(p => p.Score)
+            .First(p => p.Id == 6969);
+
+        foreach (var score in scores)
+        {
+            score.IsAccepted = true;
+            score.DateOfAcceptance = DateTime.Now;
+        }
+
+        // Do an update on the entire database.
+        var _ = _gameDatabase.Scores
+            .Where(score => score.IsAccepted)
+            .OrderByDescending(score => score.Sub1 + score.Sub2)
+            .ThenByDescending(score => score.DxScore1 + score.DxScore2)
+            .ThenBy(score => score.DateOfAdmission);
+
+        // TODO: Hit the SignalR endpoint to yell at the front end.
+
+        _gameDatabase.SaveChanges();
 
         return Ok();
     }

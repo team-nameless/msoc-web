@@ -14,7 +14,10 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<MaimaiInquiryService>();
-        services.AddDbContext<DatabaseService>(ServiceLifetime.Transient);
+        
+        services.AddDbContext<SchoolDatabaseService>(ServiceLifetime.Transient);
+        services.AddDbContext<TrackDatabaseService>(ServiceLifetime.Transient);
+        services.AddDbContext<GameDatabaseService>(ServiceLifetime.Transient);
 
         services.ActivateSingleton<IConfiguration>();
         services.ActivateSingleton<MaimaiInquiryService>();

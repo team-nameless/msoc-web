@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MSOC.Backend.Migrations
 {
-    [DbContext(typeof(DatabaseService))]
-    [Migration("20240828144041_AnotherBeginning")]
-    partial class AnotherBeginning
+    [DbContext(typeof(GameDatabaseService))]
+    [Migration("20240829044528_NewGame")]
+    partial class NewGame
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,7 @@ namespace MSOC.Backend.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("SchoolId")
+                    b.Property<int>("SchoolId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("TeamId")
@@ -45,30 +45,9 @@ namespace MSOC.Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SchoolId");
-
                     b.HasIndex("TeamId");
 
                     b.ToTable("Players");
-                });
-
-            modelBuilder.Entity("MSOC.Backend.Database.Models.School", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Schools");
                 });
 
             modelBuilder.Entity("MSOC.Backend.Database.Models.Score", b =>
@@ -127,15 +106,9 @@ namespace MSOC.Backend.Migrations
 
             modelBuilder.Entity("MSOC.Backend.Database.Models.Player", b =>
                 {
-                    b.HasOne("MSOC.Backend.Database.Models.School", "School")
-                        .WithMany()
-                        .HasForeignKey("SchoolId");
-
                     b.HasOne("MSOC.Backend.Database.Models.Team", "Team")
                         .WithMany("Players")
                         .HasForeignKey("TeamId");
-
-                    b.Navigation("School");
 
                     b.Navigation("Team");
                 });

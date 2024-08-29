@@ -27,17 +27,17 @@ public class Player
     ///     Whether this player is a leader for their team.
     /// </summary>
     public bool IsLeader { get; set; }
+    
+    /// <summary>
+    ///     The school this player belongs to.
+    /// </summary>
+    public int SchoolId { get; set; }
 
     /// <summary>
     ///     The team this player belongs to.
     /// </summary>
     public Team? Team { get; set; }
 
-    /// <summary>
-    ///     The school this player belongs to.
-    /// </summary>
-    public School? School { get; set; }
-    
     /// <summary>
     ///     The score associated with this player.
     /// </summary>

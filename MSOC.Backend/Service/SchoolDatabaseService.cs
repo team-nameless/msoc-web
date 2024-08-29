@@ -5,16 +5,13 @@ using MSOC.Backend.Database.Models;
 namespace MSOC.Backend.Service;
 
 /// <summary>
-///     A database service, for interacting with databases.
+///     A school database, well, for interacting with schools.
 ///     Meant to be used with DI.
 /// </summary>
-public class DatabaseService : DbContext
+public class SchoolDatabaseService : DbContext
 {
-    public DbSet<Player> Players { get; set; }
-    public DbSet<Team> Teams { get; set; }
     public DbSet<School> Schools { get; set; }
-    public DbSet<Score> Scores { get; set; }
-
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(
@@ -23,7 +20,7 @@ public class DatabaseService : DbContext
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
 #endif
-                .UseSqlite(new SqliteConnection("Data Source=MSOC.db;"))
+                .UseSqlite(new SqliteConnection("Data Source=schools.db;"))
         );
     }
 

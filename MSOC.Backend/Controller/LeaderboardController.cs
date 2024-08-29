@@ -8,11 +8,11 @@ namespace MSOC.Backend.Controller;
 [Route("api/game")]
 public class LeaderboardController : ControllerBase
 {
-    private readonly DatabaseService _database;
+    private readonly GameDatabaseService _gameDatabase;
 
-    public LeaderboardController(DatabaseService database)
+    public LeaderboardController(GameDatabaseService gameDatabase)
     {
-        _database = database;
+        _gameDatabase = gameDatabase;
     }
 
     [HttpGet("leaderboard/individual")]
@@ -21,7 +21,7 @@ public class LeaderboardController : ControllerBase
         if (page < 1) return BadRequest("Page number must be at least 1");
 
         // Do an update on the entire database.
-        var sortedScores = _database.Scores
+        var sortedScores = _gameDatabase.Scores
             .Include(s => s.Player)
             .Where(score => score.IsAccepted)
             .OrderByDescending(score => score.Sub1 + score.Sub2)
@@ -40,7 +40,7 @@ public class LeaderboardController : ControllerBase
     public IActionResult QueryTeamLeaderboard()
     {
         // Do an update on the entire database.
-        var sortedScores = _database.Teams
+        var sortedScores = _gameDatabase.Teams
             .Include(t => t.Players)
             .OrderByDescending(team => team.Players.Sum(p => p.Score!.Sub1 + p.Score.Sub2))
             .ThenByDescending(team => team.Players.Sum(p => p.Score!.DxScore1 + p.Score.DxScore2))

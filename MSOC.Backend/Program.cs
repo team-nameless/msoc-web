@@ -14,8 +14,9 @@ builder.Services.AddSignalR();
 // Add crapwares to the controller    
 builder.Services
     .AddSingleton<MaimaiInquiryService>()
-    .AddDbContext<DatabaseService>()
+    .AddDbContext<GameDatabaseService>()
     .AddDbContext<TrackDatabaseService>()
+    .AddDbContext<SchoolDatabaseService>()
     .AddRouting()
     .AddEndpointsApiExplorer()
     .AddHttpContextAccessor()
