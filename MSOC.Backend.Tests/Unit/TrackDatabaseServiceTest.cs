@@ -33,6 +33,6 @@ public class TrackDatabaseServiceTest(ITestOutputHelper testOutputHelper, Backen
         var trackDatabase = _fixture.GetService<TrackDatabaseService>(_testOutputHelper)!;
         trackDatabase.Database.EnsureCreated();
         
-        Assert.InRange(trackDatabase.Tracks.Count(), 620, 650);
+        Assert.StrictEqual(626, trackDatabase.Tracks.Count());
     }
 }
