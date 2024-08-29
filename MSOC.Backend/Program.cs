@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add config file
 builder.Configuration
-    .AddIniFile("config.ini")
+    .AddJsonFile("config.json")
     .Build();
 
 // :thinking:
