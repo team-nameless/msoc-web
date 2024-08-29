@@ -26,7 +26,6 @@ public class GameDatabaseService : DbContext
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
 #endif
-                .UseSqlite(new SqliteConnection("Data Source=MSOC.db;"))
         );
     }
 }

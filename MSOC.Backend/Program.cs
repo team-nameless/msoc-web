@@ -1,3 +1,5 @@
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +16,9 @@ builder.Services.AddSignalR();
 // Add crapwares to the controller    
 builder.Services
     .AddSingleton<MaimaiInquiryService>()
-    .AddDbContext<GameDatabaseService>()
-    .AddDbContext<TrackDatabaseService>()
-    .AddDbContext<SchoolDatabaseService>()
+    .AddDbContext<GameDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=MSOC.db;")))
+    .AddDbContext<TrackDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=tracks.db;")))
+    .AddDbContext<SchoolDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=schools.db;")))
     .AddRouting()
     .AddEndpointsApiExplorer()
     .AddHttpContextAccessor()
