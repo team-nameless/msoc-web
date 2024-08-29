@@ -24,7 +24,6 @@ public class SchoolDatabaseService : DbContext
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
 #endif
-                .UseSqlite(new SqliteConnection("Filename=schools.db;"))
         );
     }
 

@@ -24,7 +24,6 @@ public class TrackDatabaseService : DbContext
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
 #endif
-                .UseSqlite(new SqliteConnection("Filename=tracks.db;"))
         );
     }
 
