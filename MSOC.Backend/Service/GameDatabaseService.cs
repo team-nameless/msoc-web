@@ -13,6 +13,10 @@ public class GameDatabaseService : DbContext
     public DbSet<Player> Players { get; set; }
     public DbSet<Team> Teams { get; set; }
     public DbSet<Score> Scores { get; set; }
+    
+    public GameDatabaseService(DbContextOptions<GameDatabaseService> options) : base(options)
+    {
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

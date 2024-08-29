@@ -12,6 +12,10 @@ public class SchoolDatabaseService : DbContext
 {
     public DbSet<School> Schools { get; set; }
     
+    public SchoolDatabaseService(DbContextOptions<SchoolDatabaseService> options) : base(options)
+    {
+    }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(
