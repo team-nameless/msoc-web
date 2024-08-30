@@ -3,6 +3,7 @@ using System;
 using MSOC.Backend.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MSOC.Backend.Migrations
 {
     [DbContext(typeof(GameDatabaseService))]
-    partial class GameDatabaseServiceModelSnapshot : ModelSnapshot
+    [Migration("20240830044224_AddMaimaiAvatarUrl")]
+    partial class AddMaimaiAvatarUrl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -52,7 +55,7 @@ namespace MSOC.Backend.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Players", (string)null);
+                    b.ToTable("Players");
                 });
 
             modelBuilder.Entity("MSOC.Backend.Database.Models.Score", b =>
@@ -90,7 +93,7 @@ namespace MSOC.Backend.Migrations
                     b.HasIndex("PlayerId")
                         .IsUnique();
 
-                    b.ToTable("Scores", (string)null);
+                    b.ToTable("Scores");
                 });
 
             modelBuilder.Entity("MSOC.Backend.Database.Models.Team", b =>
@@ -106,7 +109,7 @@ namespace MSOC.Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teams", (string)null);
+                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("MSOC.Backend.Database.Models.Player", b =>

@@ -39,6 +39,12 @@ public class Player
     public int SchoolId { get; set; }
 
     /// <summary>
+    ///     maimai avatar URL.
+    /// </summary>
+    [MaxLength(256)]
+    public string MaimaiAvatarUrl { get; set; } = "";
+
+    /// <summary>
     ///     The team this player belongs to.
     /// </summary>
     public Team? Team { get; set; }

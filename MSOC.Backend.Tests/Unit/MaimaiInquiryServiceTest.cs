@@ -1,4 +1,5 @@
-﻿using MSOC.Backend.Service;
+﻿using AngleSharp.Html.Dom;
+using MSOC.Backend.Service;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 
@@ -29,7 +30,10 @@ public class MaimaiInquiryServiceTest(ITestOutputHelper testOutputHelper, Servic
         var maimai = _fixture.GetService<MaimaiInquiryService>(_testOutputHelper)!;
         var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
 
-        Assert.StrictEqual(2, result.Length);
+        Assert.StrictEqual(3, result.Length);
+        Assert.NotEmpty(result[0].TextContent);
+        Assert.NotEmpty(result[1].TextContent);
+        Assert.NotEmpty((result[2] as IHtmlImageElement)!.Source!);
     }
 
     [Theory]
@@ -39,6 +43,9 @@ public class MaimaiInquiryServiceTest(ITestOutputHelper testOutputHelper, Servic
         var maimai = _fixture.GetService<MaimaiInquiryService>(_testOutputHelper)!;
         var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
 
-        Assert.StrictEqual(2, result.Length);
+        Assert.StrictEqual(3, result.Length);
+        Assert.NotEmpty(result[0].TextContent);
+        Assert.NotEmpty(result[1].TextContent);
+        Assert.NotEmpty((result[2] as IHtmlImageElement)!.Source!);
     }
 }
