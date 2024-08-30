@@ -24,11 +24,6 @@ builder.Services
     .AddHttpContextAccessor()
     .AddSwaggerGen();
 
-// Enable services at startup time.
-builder.Services
-    .ActivateSingleton<IConfiguration>()
-    .ActivateSingleton<MaimaiInquiryService>();
-
 var app = builder.Build();
 
 // The best testing is to send the request on browser.
