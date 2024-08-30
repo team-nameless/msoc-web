@@ -7,7 +7,7 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace MSOC.Backend.Tests;
 
-public class BackendTestBedFixture : TestBedFixture
+public class ServiceTestBedFixture : TestBedFixture
 {
     protected override void AddServices(IServiceCollection services, IConfiguration? configuration)
     {
@@ -28,7 +28,7 @@ public class BackendTestBedFixture : TestBedFixture
         );
 
         services.AddDbContext<GameDatabaseService>(
-            o => o.UseSqlite($"Filename=:memory:"),
+            o => o.UseSqlite("Filename=:memory:"),
             ServiceLifetime.Transient
         );
     }
@@ -48,5 +48,5 @@ public class BackendTestBedFixture : TestBedFixture
     protected override ValueTask DisposeAsyncCore() => new();
     
     protected override void AddUserSecrets(IConfigurationBuilder configurationBuilder) 
-        => configurationBuilder.AddUserSecrets<BackendTestBedFixture>();
+        => configurationBuilder.AddUserSecrets<ServiceTestBedFixture>();
 }

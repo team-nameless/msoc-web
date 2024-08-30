@@ -4,8 +4,8 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace MSOC.Backend.Tests.Unit;
 
-public class TrackDatabaseServiceTest(ITestOutputHelper testOutputHelper, BackendTestBedFixture fixture) 
-    : TestBed<BackendTestBedFixture>(testOutputHelper, fixture)
+public class TrackDatabaseServiceTest(ITestOutputHelper testOutputHelper, ServiceTestBedFixture fixture) 
+    : TestBed<ServiceTestBedFixture>(testOutputHelper, fixture)
 {
     [Fact]
     public void DatabaseInjectionWorks()

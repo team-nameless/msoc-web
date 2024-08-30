@@ -5,8 +5,8 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 namespace MSOC.Backend.Tests.Unit;
 
 [CollectionDefinition("Dependency Injection")]
-public class MaimaiInquiryServiceTest(ITestOutputHelper testOutputHelper, BackendTestBedFixture fixture) 
-    : TestBed<BackendTestBedFixture>(testOutputHelper, fixture)
+public class MaimaiInquiryServiceTest(ITestOutputHelper testOutputHelper, ServiceTestBedFixture fixture) 
+    : TestBed<ServiceTestBedFixture>(testOutputHelper, fixture)
 {
     [Theory]
     [InlineData(1234)]
