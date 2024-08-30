@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MSOC.Backend.Database.Models;
 using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Controller;
 
 [ApiController]
-[Route("api/game")]
+[Route("api/leaderboard")]
 public class LeaderboardController : ControllerBase
 {
     private readonly GameDatabaseService _gameDatabase;
@@ -15,7 +16,12 @@ public class LeaderboardController : ControllerBase
         _gameDatabase = gameDatabase;
     }
 
-    [HttpGet("leaderboard/individual")]
+    /// <summary>
+    ///     Get individual leaderboard. Expect shit performance.
+    /// </summary>
+    /// <param name="page">Page number, starting from 1</param>
+    [HttpGet("individual")]
+    [ProducesResponseType(typeof(IEnumerable<Score>), 200, "application/json")]
     public IActionResult QueryIndividualLeaderboard([FromQuery] int page = 1)
     {
         if (page < 1) return BadRequest("Page number must be at least 1");
@@ -36,7 +42,11 @@ public class LeaderboardController : ControllerBase
         return Ok(sortedScores);
     }
 
-    [HttpGet("leaderboard/team")]
+    /// <summary>
+    ///     Get team leaderboard. Expect shit performance.
+    /// </summary>
+    [HttpGet("team")]
+    [ProducesResponseType(typeof(IEnumerable<Team>), 200, "application/json")]
     public IActionResult QueryTeamLeaderboard()
     {
         // Do an update on the entire database.

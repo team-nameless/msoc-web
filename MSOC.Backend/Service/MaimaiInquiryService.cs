@@ -56,7 +56,7 @@ public class MaimaiInquiryService
             {
                 document.First(x => x.LocalName == "div" && x.ClassName == "name_block f_l f_16"),
                 document.First(x => x.LocalName == "div" && x.ClassName == "rating_block"),
-                document.First(x => x.LocalName == "img" && x.ClassName == "w_112 f_l"),
+                document.First(x => x.LocalName == "img" && x.ClassName == "w_112 f_l")
             };
 
             return results.ToArray();

@@ -11,10 +11,10 @@ public class Player
     ///     Discord ID associated with this player.
     /// </summary>
     public ulong Id { get; set; }
- 
+
     /// <summary>
     ///     maimai Friend code associated with this player.
-    /// </summary>   
+    /// </summary>
     public ulong FriendCode { get; set; }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class Player
     ///     Whether this player is a leader for their team.
     /// </summary>
     public bool IsLeader { get; set; }
-    
+
     /// <summary>
     ///     The school this player belongs to.
     /// </summary>

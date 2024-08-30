@@ -6,6 +6,9 @@ namespace MSOC.Backend.Controller;
 [Route("api")]
 public class TestController : ControllerBase
 {
+    /// <summary>
+    ///     Send a GET to this. If it returns nothing, pray.
+    /// </summary>
     [HttpGet("healthcheck")]
     public IActionResult HealthCheck()
     {

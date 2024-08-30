@@ -1,5 +1,7 @@
+using System.Reflection;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using MSOC.Backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +24,11 @@ builder.Services
     .AddRouting()
     .AddEndpointsApiExplorer()
     .AddHttpContextAccessor()
-    .AddSwaggerGen();
+    .AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "MSOC API", Version = "v1" });
+        c.IncludeXmlComments(Assembly.GetExecutingAssembly());
+    });
 
 var app = builder.Build();
 
@@ -31,7 +37,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.DefaultModelsExpandDepth(-1);
+    });
     app.UseDeveloperExceptionPage();
 }
 

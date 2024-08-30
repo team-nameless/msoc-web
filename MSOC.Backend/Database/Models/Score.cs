@@ -14,7 +14,7 @@ public class Score
     ///     The player associated with this scoreboard entry.
     /// </summary>
     public Player Player { get; set; } = null!;
-    
+
     /// <summary>
     ///     The player ID associated with the scoreboard entry.
     /// </summary>
@@ -24,7 +24,7 @@ public class Score
     ///     Achievement% score of TRACK 1.
     /// </summary>
     public double Sub1 { get; set; }
-    
+
     /// <summary>
     ///     DX score of TRACK 1.
     /// </summary>
@@ -34,7 +34,7 @@ public class Score
     ///     Achievement% score of TRACK 2
     /// </summary>
     public double Sub2 { get; set; }
-    
+
     /// <summary>
     ///     DX score of TRACK 2.
     /// </summary>
@@ -44,12 +44,12 @@ public class Score
     ///     Get the time when this submission was sent.
     /// </summary>
     public DateTime DateOfAdmission { get; set; }
-    
+
     /// <summary>
     ///     Get the time when this submission was accepted.
     /// </summary>
     public DateTime DateOfAcceptance { get; set; }
-    
+
     /// <summary>
     ///     Whether the score is screened.
     /// </summary>

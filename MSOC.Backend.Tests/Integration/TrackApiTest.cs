@@ -1,5 +1,8 @@
 using System.Net;
+using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
+using MSOC.Backend.Controller.RequestModel;
 using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Tests.Integration;
@@ -85,7 +88,15 @@ public class TrackApiTest : IClassFixture<GameApplicationFactory<Program>>
         var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
         await trackDatabase.Database.EnsureCreatedAsync();
         
-        var response = await _httpClient.GetAsync($"/api/tracks/mark?track_id={trackId}&testing=true");
+        var response = await _httpClient.PatchAsync(
+            "/api/admin/mark-selected-track",
+            new StringContent(
+                JsonSerializer.Serialize(new TrackMarkingRequestModel
+                {
+                    TrackId = trackId,
+                    Testing = true
+                }), Encoding.UTF8, "application/json")
+        );
         
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal("ID can only be [1-626]", await response.Content.ReadAsStringAsync());
@@ -103,8 +114,17 @@ public class TrackApiTest : IClassFixture<GameApplicationFactory<Program>>
 
         var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
         await trackDatabase.Database.EnsureCreatedAsync();
+
+        var response = await _httpClient.PatchAsync(
+            "/api/admin/mark-selected-track",
+            new StringContent(
+                JsonSerializer.Serialize(new TrackMarkingRequestModel
+                {
+                    TrackId = trackId,
+                    Testing = true
+                }), Encoding.UTF8, "application/json")
+        );
         
-        var response = await _httpClient.GetAsync($"/api/tracks/mark?track_id={trackId}&testing=true");
         var content = await response.Content.ReadAsStringAsync();
         
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
