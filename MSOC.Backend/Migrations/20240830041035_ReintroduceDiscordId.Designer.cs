@@ -3,6 +3,7 @@ using System;
 using MSOC.Backend.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MSOC.Backend.Migrations
 {
     [DbContext(typeof(GameDatabaseService))]
-    partial class GameDatabaseServiceModelSnapshot : ModelSnapshot
+    [Migration("20240830041035_ReintroduceDiscordId")]
+    partial class ReintroduceDiscordId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");

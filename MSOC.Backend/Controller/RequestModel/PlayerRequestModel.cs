@@ -5,9 +5,14 @@ namespace MSOC.Backend.Controller.RequestModel;
 public class PlayerRequestModel
 {
     /// <summary>
-    ///     maimai Friend code associated with this user.
+    ///     Discord ID associated with this player.
     /// </summary>
-    public ulong Id { get; set; }
+    public ulong DiscordId { get; set; }
+    
+    /// <summary>
+    ///     maimai Friend Code associated with this player.
+    /// </summary>
+    public ulong FriendCode { get; set; }
 
     /// <summary>
     ///     maimai username.

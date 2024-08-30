@@ -26,7 +26,8 @@ public class AdminController : ControllerBase
     {
         _gameDatabase.Players.Add(new Player
         {
-            Id = player.Id,
+            Id = player.DiscordId,
+            FriendCode = player.FriendCode,
             IsLeader = player.IsLeader,
             Rating = player.Rating,
             Username = player.Username,
