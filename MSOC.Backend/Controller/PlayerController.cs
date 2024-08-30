@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Controller;
@@ -8,33 +9,31 @@ namespace MSOC.Backend.Controller;
 public class PlayerController : ControllerBase
 {
     private readonly GameDatabaseService _gameDatabase;
-    private readonly MaimaiInquiryService _maimai;
 
-    public PlayerController(MaimaiInquiryService maimai, GameDatabaseService gameDatabase)
+    public PlayerController(GameDatabaseService gameDatabase)
     {
-        _maimai = maimai;
         _gameDatabase = gameDatabase;
     }
 
-    [HttpGet("query")]
-    public async Task<IActionResult> QueryUserByDiscord(
-        [FromQuery(Name = "id")] ulong discordId
+    [HttpGet("get")]
+    public IActionResult GetPlayer(
+        [FromQuery(Name = "id")] ulong lookupKey,
+        [FromQuery(Name = "type")] string queryType = "friend_code"
     )
     {
-        var player = _gameDatabase.Players.FirstOrDefault(player => player.Id == discordId);
-        if (player == null) return NotFound();
+        var defaultQuery = _gameDatabase.Players
+            .Include(p => p.Score)
+            .Include(p => p.Team);
         
-        var needed = await _maimai.PerformFriendCodeLookupAsync(player.FriendCode);
-
-        if (needed.Length == 0) return BadRequest("Unable to retrieve needed information.");
-
-        var name = needed[0].TextContent;
-        var rating = needed[1].TextContent; 
-
-        return new JsonResult(new Dictionary<string, string>
+        var player = queryType switch
         {
-            ["name"] = name,
-            ["rating"] = rating
-        });
+            "friend_code" => defaultQuery.FirstOrDefault(p => p.FriendCode == lookupKey),
+            "discord" => defaultQuery.FirstOrDefault(p => p.Id == lookupKey),
+            _ => null
+        };
+
+        if (player == null) return NotFound();
+
+        return Ok(player);
     }
 }

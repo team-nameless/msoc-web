@@ -1,3 +1,4 @@
+using AngleSharp.Html.Dom;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Controller.RequestModel;
@@ -13,27 +14,37 @@ public class AdminController : ControllerBase
     private readonly GameDatabaseService _gameDatabase;
     private readonly TrackDatabaseService _trackDatabase;
     private readonly SchoolDatabaseService _schoolDatabase;
+    private readonly MaimaiInquiryService _maimai;
     
-    public AdminController(GameDatabaseService gameDatabase, TrackDatabaseService trackDatabase, SchoolDatabaseService schoolDatabase)
+    public AdminController(
+        GameDatabaseService gameDatabase, 
+        TrackDatabaseService trackDatabase, 
+        SchoolDatabaseService schoolDatabase,
+        MaimaiInquiryService maimai
+    )
     {
         _gameDatabase = gameDatabase;
         _trackDatabase = trackDatabase;
         _schoolDatabase = schoolDatabase;
+        _maimai = maimai;
     }
     
     [HttpPost("admin/add-player")]
-    public IActionResult AddPlayer([FromBody] PlayerRequestModel player)
+    public async Task<IActionResult> AddPlayer([FromBody] PlayerRequestModel player)
     {
+        var maiInfo = await _maimai.PerformFriendCodeLookupAsync(player.FriendCode);
+        
         _gameDatabase.Players.Add(new Player
         {
             Id = player.DiscordId,
             FriendCode = player.FriendCode,
             IsLeader = player.IsLeader,
-            Rating = player.Rating,
-            Username = player.Username,
+            Username = maiInfo[0].TextContent,
+            Rating = Convert.ToInt32(maiInfo[1].TextContent),
+            MaimaiAvatarUrl = (maiInfo[2] as IHtmlImageElement)!.Source!
         });
         
-        _gameDatabase.SaveChanges();
+        await _gameDatabase.SaveChangesAsync();
 
         return Ok();
     }
