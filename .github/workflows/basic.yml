@@ -30,4 +30,4 @@ jobs:
         run: dotnet restore
 
       - name: Run tests
-        run: dotnet test MSOC.Backend.Tests -c Release -v n --nologo --no-restore
+        run: dotnet test MSOC.Backend.Tests -c Release --nologo --no-restore
