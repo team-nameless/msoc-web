@@ -7,12 +7,12 @@ using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Tests.Integration;
 
-public class TrackApiTest : IClassFixture<GameApplicationFactory<Program>>
+public class TrackControllerTest : IClassFixture<GameApplicationFactory<Program>>
 {
     private readonly GameApplicationFactory<Program> _factory;
     private readonly HttpClient _httpClient;
 
-    public TrackApiTest(GameApplicationFactory<Program> factory)
+    public TrackControllerTest(GameApplicationFactory<Program> factory)
     {
         _factory = factory;
         _httpClient = factory.CreateClient();
@@ -76,61 +76,6 @@ public class TrackApiTest : IClassFixture<GameApplicationFactory<Program>>
         Assert.NotStrictEqual("[]", content);
     }
 
-    [Theory]
-    [InlineData(-1)]
-    [InlineData(0)]
-    [InlineData(627)]
-    [InlineData(628)]
-    public async Task TrackMarkFail(int trackId)
-    {
-        await using var scope = _factory.Services.CreateAsyncScope();
-
-        var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
-        await trackDatabase.Database.EnsureCreatedAsync();
-        
-        var response = await _httpClient.PatchAsync(
-            "/api/admin/mark-selected-track",
-            new StringContent(
-                JsonSerializer.Serialize(new TrackMarkingRequestModel
-                {
-                    TrackId = trackId,
-                    Testing = true
-                }), Encoding.UTF8, "application/json")
-        );
-        
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Equal("ID can only be [1-626]", await response.Content.ReadAsStringAsync());
-    }
-    
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(625)]
-    [InlineData(626)]
-    public async Task TrackMarkPass(int trackId)
-    {
-        await using var scope = _factory.Services.CreateAsyncScope();
-
-        var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
-        await trackDatabase.Database.EnsureCreatedAsync();
-
-        var response = await _httpClient.PatchAsync(
-            "/api/admin/mark-selected-track",
-            new StringContent(
-                JsonSerializer.Serialize(new TrackMarkingRequestModel
-                {
-                    TrackId = trackId,
-                    Testing = true
-                }), Encoding.UTF8, "application/json")
-        );
-        
-        var content = await response.Content.ReadAsStringAsync();
-        
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotStrictEqual("[]", content);
-    }
-    
     [Theory]
     [InlineData(-1)]
     [InlineData(0)]

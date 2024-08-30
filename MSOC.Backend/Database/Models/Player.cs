@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using MSOC.Backend.Enum;
 
 namespace MSOC.Backend.Database.Models;
 
@@ -53,4 +54,9 @@ public class Player
     ///     The score associated with this player.
     /// </summary>
     public Score? Score { get; set; }
+
+    /// <summary>
+    ///     MSOC membership level.
+    /// </summary>
+    public MembershipLevel MembershipLevel { get; set; } = MembershipLevel.MSOC;
 }

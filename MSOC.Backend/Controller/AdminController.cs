@@ -125,23 +125,49 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
+    ///     Bind a player to a team.
+    /// </summary>
+    /// <param name="bind">Bind object.</param>
+    [HttpPatch("bind-player-to-team")]
+    public IActionResult BindPlayerToTeam(
+        [FromBody] PlayerBindingRequestModel bind
+    )
+    {
+        var player = _gameDatabase.Players.FirstOrDefault(p => p.Id == bind.PlayerId);
+        var team = _gameDatabase.Teams.FirstOrDefault(t => t.Id == bind.TeamId);
+
+        if (player is null || team is null) return NotFound();
+        
+        player.Team = team;
+        
+        // EF Core implicitly did this for me.
+        // team.Players.Add(player);
+        
+        _gameDatabase.SaveChanges();
+        
+        return Ok();
+    }
+    
+    /// <summary>
     ///     Approve an entry on the leaderboard.
     /// </summary>
     /// <param name="scoreId">Score ID.</param>
     [HttpPatch("approve-leaderboard")]
-    [ProducesResponseType(typeof(Score), 200, "application/json")]
     public IActionResult ApproveScore(
         [FromQuery(Name = "score_id")] ulong scoreId
     )
     {
-        var scores = _gameDatabase.Scores.Where(score => score.Id == scoreId);
+        var scores = _gameDatabase.Scores.Where(score => score.Id == scoreId).ToArray();
+
+        if (scores.Length == 0) return NotFound();
         
         foreach (var score in scores)
         {
             score.IsAccepted = true;
             score.DateOfAcceptance = DateTime.Now;
+            
         }
-
+        
         // Do an update on the entire database.
         var _ = _gameDatabase.Scores
             .Where(score => score.IsAccepted)
@@ -152,7 +178,7 @@ public class AdminController : ControllerBase
         // TODO: Hit the SignalR endpoint to yell at the front end.
 
         _gameDatabase.SaveChanges();
-
+        
         return Ok();
     }
 
@@ -161,7 +187,6 @@ public class AdminController : ControllerBase
     /// </summary>
     /// <param name="trackMark">Track marking object.</param>
     [HttpPatch("mark-selected-track")]
-    [ProducesResponseType(typeof(Track), 200, "application/json")]
     public IActionResult MarkTrackAsPicked(
         [FromBody] TrackMarkingRequestModel trackMark
     )
@@ -183,6 +208,6 @@ public class AdminController : ControllerBase
                 _trackDatabase.SaveChanges();
             }
 
-        return Ok(foundedTracks);
+        return Ok();
     }
 }

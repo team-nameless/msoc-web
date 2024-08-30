@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MSOC.Backend.Service;
@@ -34,9 +35,12 @@ public class GameApplicationFactory<TProgram> : WebApplicationFactory<TProgram> 
             );
 
             services.AddDbContext<GameDatabaseService>(
-                o => o.UseSqlite("Filename=:memory:"),
+                o => o.UseSqlite($"Filename={path}/MSOC.Backend/MSOC.Test.db"),
                 ServiceLifetime.Transient
             );
+
+            // services.AddSingleton<IConfiguration>();
+            services.AddTransient<MaimaiInquiryService>();
         });
 
         return base.CreateHost(builder);

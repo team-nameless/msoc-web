@@ -1,16 +1,23 @@
+using Microsoft.Extensions.DependencyInjection;
 using MSOC.Backend.Service;
-using Xunit.Abstractions;
-using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace MSOC.Backend.Tests.Unit;
 
-public class TrackDatabaseServiceTest(ITestOutputHelper testOutputHelper, ServiceTestBedFixture fixture) 
-    : TestBed<ServiceTestBedFixture>(testOutputHelper, fixture)
+public class TrackDatabaseServiceTest : IClassFixture<GameApplicationFactory<Program>>
 {
+    private readonly GameApplicationFactory<Program> _factory;
+
+    public TrackDatabaseServiceTest(GameApplicationFactory<Program> factory)
+    {
+        _factory = factory;
+    }
+    
     [Fact]
     public void DatabaseInjectionWorks()
     {
-        var trackDatabase = _fixture.GetService<TrackDatabaseService>(_testOutputHelper)!;
+        using var scope = _factory.Services.CreateScope();
+        var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
+        
         trackDatabase.Database.EnsureCreated();
         
         Assert.NotNull(trackDatabase);
@@ -19,8 +26,8 @@ public class TrackDatabaseServiceTest(ITestOutputHelper testOutputHelper, Servic
     [Fact]
     public void AllTablesExists()
     {
-        var trackDatabase = _fixture.GetService<TrackDatabaseService>(_testOutputHelper)!;
-        trackDatabase.Database.EnsureCreated();
+        using var scope = _factory.Services.CreateScope();
+        var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
         
         var _ = trackDatabase.Tracks;
         
@@ -30,8 +37,8 @@ public class TrackDatabaseServiceTest(ITestOutputHelper testOutputHelper, Servic
     [Fact]
     public void AllEntriesExists()
     {
-        var trackDatabase = _fixture.GetService<TrackDatabaseService>(_testOutputHelper)!;
-        trackDatabase.Database.EnsureCreated();
+        using var scope = _factory.Services.CreateScope();
+        var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
         
         Assert.StrictEqual(626, trackDatabase.Tracks.Count());
     }

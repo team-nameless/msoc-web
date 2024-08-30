@@ -1,16 +1,23 @@
+using Microsoft.Extensions.DependencyInjection;
 using MSOC.Backend.Service;
-using Xunit.Abstractions;
-using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace MSOC.Backend.Tests.Unit;
 
-public class SchoolDatabaseServiceTest(ITestOutputHelper testOutputHelper, ServiceTestBedFixture fixture) 
-    : TestBed<ServiceTestBedFixture>(testOutputHelper, fixture)
+public class SchoolDatabaseServiceTest : IClassFixture<GameApplicationFactory<Program>>
 {
+    private readonly GameApplicationFactory<Program> _factory;
+
+    public SchoolDatabaseServiceTest(GameApplicationFactory<Program> factory)
+    {
+        _factory = factory;
+    }
+    
     [Fact]
     public void DatabaseInjectionWorks()
     {
-        var schoolDatabase = _fixture.GetService<SchoolDatabaseService>(_testOutputHelper)!;
+        using var scope = _factory.Services.CreateScope();
+        var schoolDatabase = scope.ServiceProvider.GetService<SchoolDatabaseService>()!;
+        
         schoolDatabase.Database.EnsureCreated();
         
         Assert.NotNull(schoolDatabase);
@@ -18,9 +25,9 @@ public class SchoolDatabaseServiceTest(ITestOutputHelper testOutputHelper, Servi
     
     [Fact]
     public void AllTablesExists()
-    {        
-        var schoolDatabase = _fixture.GetService<SchoolDatabaseService>(_testOutputHelper)!;
-        schoolDatabase.Database.EnsureCreated();
+    {
+        using var scope = _factory.Services.CreateScope();
+        var schoolDatabase = scope.ServiceProvider.GetService<SchoolDatabaseService>()!;
         
         var _ = schoolDatabase.Schools;
         
@@ -30,8 +37,8 @@ public class SchoolDatabaseServiceTest(ITestOutputHelper testOutputHelper, Servi
     [Fact]
     public void AllEntriesExists()
     {
-        var schoolDatabase = _fixture.GetService<SchoolDatabaseService>(_testOutputHelper)!;
-        schoolDatabase.Database.EnsureCreated();
+        using var scope = _factory.Services.CreateScope();
+        var schoolDatabase = scope.ServiceProvider.GetService<SchoolDatabaseService>()!;
         
         Assert.StrictEqual(256, schoolDatabase.Schools.Count());
     }

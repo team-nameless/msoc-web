@@ -1,21 +1,27 @@
 ﻿using AngleSharp.Html.Dom;
+using Microsoft.Extensions.DependencyInjection;
 using MSOC.Backend.Service;
-using Xunit.Abstractions;
-using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace MSOC.Backend.Tests.Unit;
 
-[CollectionDefinition("Dependency Injection")]
-public class MaimaiInquiryServiceTest(ITestOutputHelper testOutputHelper, ServiceTestBedFixture fixture) 
-    : TestBed<ServiceTestBedFixture>(testOutputHelper, fixture)
+public class MaimaiInquiryServiceTest : IClassFixture<GameApplicationFactory<Program>>
 {
+    private readonly GameApplicationFactory<Program> _factory;
+
+    public MaimaiInquiryServiceTest(GameApplicationFactory<Program> factory)
+    {
+        _factory = factory;
+    }
+    
     [Theory]
     [InlineData(1234)]
     [InlineData(69420)]
     [InlineData(177013)]
     public async Task InvalidFriendCodeTest(ulong friendCode)
     {
-        var maimai = _fixture.GetService<MaimaiInquiryService>(_testOutputHelper)!;
+        using var scope = _factory.Services.CreateAsyncScope();
+        
+        var maimai = scope.ServiceProvider.GetService<MaimaiInquiryService>()!;
         var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
 
         Assert.StrictEqual(0, result.Length);
@@ -27,7 +33,9 @@ public class MaimaiInquiryServiceTest(ITestOutputHelper testOutputHelper, Servic
     [InlineData(9020119099087)]
     public async Task ValidFamiliarFriendCodeTest(ulong friendCode)
     {
-        var maimai = _fixture.GetService<MaimaiInquiryService>(_testOutputHelper)!;
+        using var scope = _factory.Services.CreateAsyncScope();
+        
+        var maimai = scope.ServiceProvider.GetService<MaimaiInquiryService>()!;
         var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
 
         Assert.StrictEqual(3, result.Length);
@@ -40,7 +48,9 @@ public class MaimaiInquiryServiceTest(ITestOutputHelper testOutputHelper, Servic
     [InlineData(8069933165057)]
     public async Task ValidStrangerFriendCodeTest(ulong friendCode)
     {
-        var maimai = _fixture.GetService<MaimaiInquiryService>(_testOutputHelper)!;
+        using var scope = _factory.Services.CreateAsyncScope();
+        
+        var maimai = scope.ServiceProvider.GetService<MaimaiInquiryService>()!;
         var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
 
         Assert.StrictEqual(3, result.Length);
