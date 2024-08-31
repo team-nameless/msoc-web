@@ -1,5 +1,6 @@
 using AngleSharp.Html.Dom;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Controller.RequestModel;
 using MSOC.Backend.Database.Models;
 using MSOC.Backend.Service;
@@ -137,12 +138,7 @@ public class AdminController : ControllerBase
         var team = _gameDatabase.Teams.FirstOrDefault(t => t.Id == bind.TeamId);
 
         if (player is null || team is null) return NotFound();
-        
-        player.Team = team;
-        
-        // EF Core implicitly did this for me.
-        // team.Players.Add(player);
-        
+        team.Players.Add(player);
         _gameDatabase.SaveChanges();
         
         return Ok();
