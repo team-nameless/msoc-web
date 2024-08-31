@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AngleSharp.Html.Dom;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -147,13 +148,13 @@ public class AdminController : ControllerBase
     /// <summary>
     ///     Approve an entry on the leaderboard.
     /// </summary>
-    /// <param name="scoreId">Score ID.</param>
+    /// <param name="approval">Approval object.</param>
     [HttpPatch("approve-leaderboard")]
     public IActionResult ApproveScore(
-        [FromQuery(Name = "score_id")] ulong scoreId
+        [FromBody] ScoreApprovalRequestModel approval
     )
     {
-        var scores = _gameDatabase.Scores.Where(score => score.Id == scoreId).ToArray();
+        var scores = _gameDatabase.Scores.Where(score => score.Id == approval.ScoreId).ToArray();
 
         if (scores.Length == 0) return NotFound();
         
@@ -161,7 +162,6 @@ public class AdminController : ControllerBase
         {
             score.IsAccepted = true;
             score.DateOfAcceptance = DateTime.Now;
-            
         }
         
         // Do an update on the entire database.

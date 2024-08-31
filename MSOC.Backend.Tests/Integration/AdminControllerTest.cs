@@ -6,10 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MSOC.Backend.Controller.RequestModel;
 using MSOC.Backend.Service;
 
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace MSOC.Backend.Tests.Integration;
-
-public class AdminControllerTest : IClassFixture<GameApplicationFactory<Program>>, IDisposable
+public class AdminControllerTest : IClassFixture<GameApplicationFactory<Program>>
 {
     private readonly GameApplicationFactory<Program> _factory;
     private readonly HttpClient _httpClient;
@@ -18,21 +16,6 @@ public class AdminControllerTest : IClassFixture<GameApplicationFactory<Program>
     {
         _factory = factory;
         _httpClient = factory.CreateClient();
-        
-        // ensure the game database is nuked.
-        // so we start fresh everytime.
-        using var scope = _factory.Services.CreateScope();
-        var gameDatabase = scope.ServiceProvider.GetService<GameDatabaseService>()!;
-        gameDatabase.Database.EnsureDeleted();
-    }
-    
-    public void Dispose()
-    {
-        // ensure the game database is nuked.
-        // so we start fresh everytime.
-        using var scope = _factory.Services.CreateScope();
-        var gameDatabase = scope.ServiceProvider.GetService<GameDatabaseService>()!;
-        gameDatabase.Database.EnsureDeleted();
     }
     
     [Theory]
@@ -214,6 +197,47 @@ public class AdminControllerTest : IClassFixture<GameApplicationFactory<Program>
         Assert.NotNull(editedTeam);
         Assert.StrictEqual(1, editedTeam.Players.Count);
         
+        await gameDatabase.Database.EnsureDeletedAsync();
+    }
+
+    [Fact]
+    public async Task ScoreApprovalTest()
+    {
+        await using var scope = _factory.Services.CreateAsyncScope();
+
+        var gameDatabase = scope.ServiceProvider.GetService<GameDatabaseService>()!;
+        await gameDatabase.Database.EnsureCreatedAsync();
+        
+        for (ulong testId = 1001; testId <= 1005; testId++)
+        {
+            await _httpClient.PostAsync(
+                "/api/admin/add-score",
+                new StringContent(
+                    JsonSerializer.Serialize(new ScoreAdditionRequestModel
+                    {
+                        DiscordId = testId,
+                        FriendCode = 8090803305987,
+                        Sub1 = 101.0000,
+                        DxScore1 = 6969,
+                        Sub2 = 101.0000,
+                        DxScore2 = 7270,
+                        SchoolId = 123
+                    }), Encoding.UTF8, "application/json")
+            );
+        }
+
+        for (ulong testId = 1; testId <= 5; testId++)
+            await _httpClient.PatchAsync(
+                "/api/admin/approve-leaderboard",
+                new StringContent(JsonSerializer.Serialize(new ScoreApprovalRequestModel
+                {
+                    ScoreId = testId
+                }), Encoding.UTF8, "application/json")
+            );
+
+        var approvedScores = gameDatabase.Scores.Where(score => score.IsAccepted == true);
+        
+        Assert.StrictEqual(5, approvedScores.Count());
         await gameDatabase.Database.EnsureDeletedAsync();
     }
 }
