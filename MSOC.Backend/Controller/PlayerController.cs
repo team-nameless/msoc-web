@@ -38,8 +38,11 @@ public class PlayerController : ControllerBase
             "discord" => defaultQuery.FirstOrDefault(p => p.Id == lookupKey),
             _ => null
         };
-
+        
         if (player == null) return NotFound();
+        
+        // we prevent recursion?
+        player.Score!.Player = null!;
 
         return Ok(player);
     }
