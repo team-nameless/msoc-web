@@ -36,6 +36,9 @@ public class LeaderboardController : ControllerBase
             .Skip(10 * (page - 1))
             .Take(10);
 
+        // recursion prevention
+        foreach (var score in sortedScores) score.Player.Score = null!;
+        
         // TODO: Hit the SignalR endpoint to yell at the front end.
         // _database.SaveChanges();
 
