@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MSOC.Backend.Middleware;
 using MSOC.Backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +47,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app
+    .UseWhen(
+        ctx => ctx.Request.Path.StartsWithSegments("/api/admin"),
+        cfg => cfg.UseMiddleware<AdminControllerAuthentication>()
+    )
     .UseHealthChecks("/api/healthcheck")
     .UseHsts()
     .UseRouting()

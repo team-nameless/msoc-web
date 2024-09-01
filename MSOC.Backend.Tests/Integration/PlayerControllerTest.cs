@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MSOC.Backend.Controller.RequestModel;
 using MSOC.Backend.Database.Models;
@@ -18,7 +19,14 @@ public class PlayerControllerTest : IClassFixture<GameApplicationFactory<Program
     public PlayerControllerTest(GameApplicationFactory<Program> factory)
     {
         _factory = factory;
+        
+        var configuration = _factory.Services.GetService<IConfiguration>()!;
+        
         _httpClient = factory.CreateClient();
+        _httpClient.DefaultRequestHeaders.Add(
+            "Authorization",
+            configuration.GetSection("API:Authorization").Value
+        );
         
         // ensure the game database is nuked.
         // so we start fresh everytime.

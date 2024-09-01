@@ -1,7 +1,9 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MSOC.Backend.Controller.RequestModel;
 using MSOC.Backend.Service;
@@ -15,7 +17,14 @@ public class AdminControllerTest : IClassFixture<GameApplicationFactory<Program>
     public AdminControllerTest(GameApplicationFactory<Program> factory)
     {
         _factory = factory;
+        
+        var configuration = _factory.Services.GetService<IConfiguration>()!;
+        
         _httpClient = factory.CreateClient();
+        _httpClient.DefaultRequestHeaders.Add(
+            "Authorization",
+            configuration.GetSection("API:Authorization").Value
+        );
     }
     
     [Theory]
