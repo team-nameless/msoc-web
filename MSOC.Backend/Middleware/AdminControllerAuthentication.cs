@@ -13,18 +13,27 @@ public class AdminControllerAuthentication
 
     public async Task InvokeAsync(HttpContext context)
     {
+        var authConfig = _configuration.GetValue<string>("API:Authorization");
+        
+        // EDGE CASE: if no authorization configuration, exit immediately.
+        if (string.IsNullOrWhiteSpace(_configuration.GetValue<string>("API:Authorization")))
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return;
+        }
+        
         var auth = context.Request.Headers.Authorization;
 
         if (
             !string.IsNullOrWhiteSpace(auth) &&
-            auth == $"Basic {_configuration.GetValue<string>("API:Authorization")}"
+            auth == $"Basic {authConfig}"
         )
         {
             await _next(context);
         }
         else
         {
-            context.Response.StatusCode = 401;
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
         }
     }
 }
