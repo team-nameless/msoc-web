@@ -22,5 +22,9 @@ public class AdminControllerAuthentication
         {
             await _next(context);
         }
+        else
+        {
+            context.Response.StatusCode = 401;
+        }
     }
 }
