@@ -17,7 +17,7 @@ public class AdminControllerAuthentication
 
         if (
             !string.IsNullOrWhiteSpace(auth) &&
-            auth == _configuration.GetValue<string>("API:Authorization")
+            auth == $"Basic {_configuration.GetValue<string>("API:Authorization")}"
         )
         {
             await _next(context);

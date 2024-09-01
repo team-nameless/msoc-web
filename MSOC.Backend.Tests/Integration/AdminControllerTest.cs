@@ -21,8 +21,8 @@ public class AdminControllerTest : IClassFixture<GameApplicationFactory<Program>
         var configuration = _factory.Services.GetService<IConfiguration>()!;
         
         _httpClient = factory.CreateClient();
-        _httpClient.DefaultRequestHeaders.Add(
-            "Authorization",
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Basic",
             configuration.GetSection("API:Authorization").Value
         );
     }

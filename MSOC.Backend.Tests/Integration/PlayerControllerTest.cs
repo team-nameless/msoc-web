@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -23,8 +24,8 @@ public class PlayerControllerTest : IClassFixture<GameApplicationFactory<Program
         var configuration = _factory.Services.GetService<IConfiguration>()!;
         
         _httpClient = factory.CreateClient();
-        _httpClient.DefaultRequestHeaders.Add(
-            "Authorization",
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Basic",
             configuration.GetSection("API:Authorization").Value
         );
         
