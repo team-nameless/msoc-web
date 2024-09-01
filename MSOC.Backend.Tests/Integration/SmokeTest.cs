@@ -24,6 +24,6 @@ public class SmokeTest : IClassFixture<GameApplicationFactory<Program>>
         var response = await _httpClient.GetAsync("/api/healthcheck");
         
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("I am OK", await response.Content.ReadAsStringAsync());
+        Assert.Equal("Healthy", await response.Content.ReadAsStringAsync());
     }
 }

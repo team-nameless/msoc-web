@@ -14,6 +14,7 @@ builder.Configuration
 // :thinking:
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+builder.Services.AddHealthChecks();
 
 // Add crapwares to the controller    
 builder.Services
@@ -45,6 +46,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app
+    .UseHealthChecks("/api/healthcheck")
     .UseHsts()
     .UseRouting()
     .UseHttpsRedirection()
