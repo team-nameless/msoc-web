@@ -13,7 +13,7 @@ public class MaimaiInquiryServiceTest : IClassFixture<GameApplicationFactory<Pro
         _factory = factory;
     }
     
-    [Theory]
+    [Theory(Skip = "Rely much on internet speed.")]
     [InlineData(1234)]
     [InlineData(69420)]
     [InlineData(177013)]
@@ -27,7 +27,7 @@ public class MaimaiInquiryServiceTest : IClassFixture<GameApplicationFactory<Pro
         Assert.StrictEqual(0, result.Length);
     }
 
-    [Theory]
+    [Theory(Skip = "Rely much on internet speed.")]
     [InlineData(9051555929120)]
     [InlineData(8095773611588)]
     [InlineData(9020119099087)]
@@ -44,7 +44,7 @@ public class MaimaiInquiryServiceTest : IClassFixture<GameApplicationFactory<Pro
         Assert.NotEmpty((result[2] as IHtmlImageElement)!.Source!);
     }
 
-    [Theory]
+    [Theory(Skip = "Rely much on internet speed.")]
     [InlineData(8069933165057)]
     public async Task ValidStrangerFriendCodeTest(ulong friendCode)
     {
