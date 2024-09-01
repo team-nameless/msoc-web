@@ -30,6 +30,31 @@ builder.Services
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "MSOC API", Version = "v1" });
         c.IncludeXmlComments(Assembly.GetExecutingAssembly());
+        
+        c.AddSecurityDefinition("Basic", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Basic",
+            BearerFormat = "String",
+            In = ParameterLocation.Header,
+            Description = "Authorization header value using the Basic scheme."
+        });
+        
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Basic"
+                    }
+                },
+                []
+            }
+        });
     });
 
 var app = builder.Build();
