@@ -154,25 +154,16 @@ public class AdminController : ControllerBase
         [FromBody] ScoreApprovalRequestModel approval
     )
     {
-        var scores = _gameDatabase.Scores.Where(score => score.Id == approval.ScoreId).ToArray();
+        var foundScore = _gameDatabase.Scores.FirstOrDefault(score => score.Id == approval.ScoreId);
 
-        if (scores.Length == 0) return NotFound();
-        
-        foreach (var score in scores)
-        {
-            score.IsAccepted = true;
-            score.DateOfAcceptance = DateTime.Now;
-        }
-        
-        // Do an update on the entire database.
-        var _ = _gameDatabase.Scores
-            .Where(score => score.IsAccepted)
-            .OrderByDescending(score => score.Sub1 + score.Sub2)
-            .ThenByDescending(score => score.DxScore1 + score.DxScore2)
-            .ThenBy(score => score.DateOfAdmission);
+        if (foundScore == null) return NotFound();
+
+        foundScore.IsAccepted = true;
+        foundScore.DateOfAcceptance = DateTime.Now;
 
         // TODO: Hit the SignalR endpoint to yell at the front end.
-
+        
+        _gameDatabase.Update(foundScore);
         _gameDatabase.SaveChanges();
         
         return Ok();
@@ -189,20 +180,17 @@ public class AdminController : ControllerBase
     {
         if (trackMark.TrackId is < 1 or > 626) return BadRequest("ID can only be [1-626]");
 
-        var foundedTracks = _trackDatabase.Tracks
-            .Where(track => track.Id == trackMark.TrackId)
-            .Take(1)
-            .ToArray();
+        var foundedTrack = _trackDatabase.Tracks
+            .FirstOrDefault(track => track.Id == trackMark.TrackId);
 
-        if (foundedTracks.Length == 0) return NotFound();
+        if (foundedTrack == null) return NotFound();
 
         if (!trackMark.Testing)
-            foreach (var track in foundedTracks)
-            {
-                track.HasBeenPicked = true;
-                _trackDatabase.Update(track);
-                _trackDatabase.SaveChanges();
-            }
+        {
+            foundedTrack.HasBeenPicked = true;
+            _trackDatabase.Update(foundedTrack);
+            _trackDatabase.SaveChanges();
+        }
 
         return Ok();
     }
