@@ -18,24 +18,21 @@ public class AdminControllerAuthentication
     public async Task InvokeAsync(HttpContext context)
     {
         // EDGE CASE: if no authorization configuration, exit immediately.
-        if (string.IsNullOrWhiteSpace(_authKey))
+        if (!string.IsNullOrWhiteSpace(_authKey))
         {
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            return;
-        }
-        
-        var auth = context.Request.Headers.Authorization;
+            var auth = context.Request.Headers.Authorization;
 
-        if (
-            !string.IsNullOrWhiteSpace(auth) &&
-            auth == $"Basic {_authKey}"
-        )
-        {
-            await _next(context);
-        }
-        else
-        {
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            if (
+                !string.IsNullOrWhiteSpace(auth) &&
+                auth == $"Basic {_authKey}"
+            )
+            {
+                await _next(context);
+            }
+            else
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            }
         }
     }
 }
