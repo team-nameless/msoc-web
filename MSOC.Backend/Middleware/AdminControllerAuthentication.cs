@@ -4,19 +4,21 @@ public class AdminControllerAuthentication
 {
     private readonly RequestDelegate _next;
     private readonly IConfiguration _configuration;
+    
+    private readonly string _authKey;
 
     public AdminControllerAuthentication(RequestDelegate next, IConfiguration configuration)
     {
         _next = next;
         _configuration = configuration;
+        
+        _authKey = _configuration.GetValue<string>("API:Authorization")!;
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
-        var authConfig = _configuration.GetValue<string>("API:Authorization");
-        
         // EDGE CASE: if no authorization configuration, exit immediately.
-        if (string.IsNullOrWhiteSpace(_configuration.GetValue<string>("API:Authorization")))
+        if (string.IsNullOrWhiteSpace(_authKey))
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             return;
@@ -26,7 +28,7 @@ public class AdminControllerAuthentication
 
         if (
             !string.IsNullOrWhiteSpace(auth) &&
-            auth == $"Basic {authConfig}"
+            auth == $"Basic {_authKey}"
         )
         {
             await _next(context);
