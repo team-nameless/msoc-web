@@ -43,9 +43,9 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
                     {
                         DiscordId = testId,
                         FriendCode = 8090803305987,
-                        Sub1 = 101.0000,
+                        Sub1 = Random.Shared.Next(97, 101),
                         DxScore1 = 6969,
-                        Sub2 = 101.0000,
+                        Sub2 = Random.Shared.Next(97, 101),
                         DxScore2 = 7270,
                         SchoolId = 123
                     }), Encoding.UTF8, "application/json")
@@ -68,6 +68,12 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
         
         Assert.StrictEqual(5, scores!.Count);
         scores.ForEach(score => Assert.Null(score.Player));
+
+        var sortedScores = scores.OrderByDescending(score => score.Sub1 + score.Sub2)
+            .ThenByDescending(score => score.DxScore1 + score.DxScore2)
+            .ThenBy(score => score.DateOfAdmission);
+        
+        Assert.Equal(scores, sortedScores);
         
         await gameDatabase.Database.EnsureDeletedAsync();
     }
