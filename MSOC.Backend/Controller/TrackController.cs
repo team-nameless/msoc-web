@@ -54,13 +54,11 @@ public class TrackController : ControllerBase
     {
         if (trackId is < 1 or > 626) return BadRequest("ID can only be [1-626]");
 
-        var foundedTracks = _trackDatabase.Tracks
-            .Where(track => track.Id == trackId)
-            .Take(1)
-            .ToArray();
+        var foundedTrack = _trackDatabase.Tracks
+            .FirstOrDefault(track => track.Id == trackId);
 
-        if (foundedTracks.Length == 0) return NotFound();
+        if (foundedTrack == null) return NotFound();
 
-        return Ok(foundedTracks[0]);
+        return Ok(foundedTrack);
     }
 }
