@@ -28,13 +28,13 @@ public class LeaderboardController : ControllerBase
 
         // Do an update on the entire database.
         var sortedScores = _gameDatabase.Scores
-            .Include(s => s.Player)
             .Where(score => score.IsAccepted)
             .OrderByDescending(score => score.Sub1 + score.Sub2)
             .ThenByDescending(score => score.DxScore1 + score.DxScore2)
             .ThenBy(score => score.DateOfAdmission)
             .Skip(10 * (page - 1))
-            .Take(10);
+            .Take(10)
+            .Include(s => s.Player);
 
         // recursion prevention
         foreach (var score in sortedScores) score.Player.Score = null!;
