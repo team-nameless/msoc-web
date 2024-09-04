@@ -13,6 +13,7 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
 {
     private readonly GameApplicationFactory<Program> _factory;
     private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _jsonCaseInsensitive = new() { PropertyNameCaseInsensitive = true };
     
     public LeaderboardControllerTest(GameApplicationFactory<Program> factory)
     {
@@ -64,7 +65,7 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
         var response = await _httpClient.GetAsync("/api/leaderboard/individual?page=1");
         var content = await response.Content.ReadAsStringAsync();
         
-        var scores = JsonSerializer.Deserialize<List<Score>>(content);
+        var scores = JsonSerializer.Deserialize<List<Score>>(content, _jsonCaseInsensitive);
         
         Assert.StrictEqual(5, scores!.Count);
         scores.ForEach(score => Assert.Null(score.Player));

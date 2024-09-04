@@ -16,6 +16,7 @@ public class PlayerControllerTest : IClassFixture<GameApplicationFactory<Program
 {
     private readonly GameApplicationFactory<Program> _factory;
     private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _jsonCaseInsensitive = new() { PropertyNameCaseInsensitive = true };
     
     public PlayerControllerTest(GameApplicationFactory<Program> factory)
     {
@@ -74,11 +75,7 @@ public class PlayerControllerTest : IClassFixture<GameApplicationFactory<Program
         var response = await _httpClient.GetAsync($"/api/player/get?id={key}&type={type}");
         var content = await response.Content.ReadAsStringAsync();
 
-        var data = JsonSerializer.Deserialize<Player>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            ReferenceHandler = ReferenceHandler.IgnoreCycles
-        });
+        var data = JsonSerializer.Deserialize<Player>(content, _jsonCaseInsensitive);
         
         Assert.NotNull(data);
         Assert.NotNull(data.Score);
