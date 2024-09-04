@@ -24,7 +24,7 @@ This is `msoc-web` repository, containing **both** the user-facing and the back 
 - `MSOC`: the user facing portion.
 - `MSOC.Backend`: the backside of the web, containing *most* of the useful APIs.
 - `MSOC.Backend.Tests`: containing the Unit and Integration tests for the backend. Since the APIs in the backend make heavy uses of the database, we try our best to test the entire backend in transactional manner, and to cover many edge cases as possible. 
-  - [We leverage GitHub Action to test on every commit](https://github.com/team-nameless/msoc-web/blob/main/.github/workflows/basic.yml). The result can be seen here: [![Sanity check](https://github.com/team-nameless/msoc-web/actions/workflows/basic.yml/badge.svg)](https://github.com/team-nameless/msoc-web/actions/workflows/basic.yml)
+  - [We leverage GitHub Action to test on every commit](https://github.com/team-nameless/msoc-web/blob/main/.github/workflows/backend.yml). The result can be seen here: [![Sanity check](https://github.com/team-nameless/msoc-web/actions/workflows/backend.yml/badge.svg)](https://github.com/team-nameless/msoc-web/actions/workflows/backend.yml)
 
 # How can I run the code?
 
