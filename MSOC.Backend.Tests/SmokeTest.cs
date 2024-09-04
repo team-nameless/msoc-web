@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MSOC.Backend.Tests.Integration;
+namespace MSOC.Backend.Tests;
 
 public class SmokeTest : IClassFixture<GameApplicationFactory<Program>>
 {
