@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Enum;
 
 namespace MSOC.Backend.Database.Models;
@@ -6,6 +7,7 @@ namespace MSOC.Backend.Database.Models;
 /// <summary>
 ///     Representing a school.
 /// </summary>
+[Index(nameof(Name), nameof(Type), IsUnique = true)]
 public class School
 {
     /// <summary>

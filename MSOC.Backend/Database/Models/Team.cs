@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace MSOC.Backend.Database.Models;
 
 /// <summary>
 ///     Representing a team.
 /// </summary>
+[Index(nameof(Name), IsUnique = true)]
 public class Team
 {
     /// <summary>
