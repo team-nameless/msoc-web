@@ -25,18 +25,18 @@ public class GameApplicationFactory<TProgram> : WebApplicationFactory<TProgram> 
                 .Parent!.Parent!.Parent!.Parent!.ToString();
         
             services.AddDbContext<SchoolDatabaseService>(
-                o => o.UseSqlite($"Filename={path}/MSOC.Backend/schools.db"),
-                ServiceLifetime.Transient
+                o => o.UseSqlite($"Filename={path}/MSOC.Backend/schools.db")
+                // ServiceLifetime.Transient
             );
         
             services.AddDbContext<TrackDatabaseService>(
-                o => o.UseSqlite($"Filename={path}/MSOC.Backend/tracks.db"),
-                ServiceLifetime.Transient
+                o => o.UseSqlite($"Filename={path}/MSOC.Backend/tracks.db")
+                // ServiceLifetime.Transient
             );
 
             services.AddDbContext<GameDatabaseService>(
-                o => o.UseSqlite($"Filename={path}/MSOC.Backend/MSOC.Test.db"),
-                ServiceLifetime.Transient
+                o => o.UseSqlite($"Filename={path}/MSOC.Backend/MSOC.Test.db")
+                //ServiceLifetime.Transient
             );
 
             // services.AddSingleton<IConfiguration>();
