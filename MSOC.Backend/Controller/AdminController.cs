@@ -139,6 +139,9 @@ public class AdminController : ControllerBase
         var team = _gameDatabase.Teams.FirstOrDefault(t => t.Id == bind.TeamId);
 
         if (player is null || team is null) return NotFound();
+
+        if (team.Players.Count == 4) return BadRequest("Team is already full.");
+            
         team.Players.Add(player);
         _gameDatabase.SaveChanges();
         
