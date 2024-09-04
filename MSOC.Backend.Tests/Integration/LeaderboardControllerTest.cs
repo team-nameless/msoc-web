@@ -68,7 +68,7 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
         var scores = JsonSerializer.Deserialize<List<Score>>(content, _jsonCaseInsensitive);
         
         Assert.StrictEqual(5, scores!.Count);
-        scores.ForEach(score => Assert.Null(score.Player));
+        scores.ForEach(score => Assert.Null(score.Player.Score));
 
         var sortedScores = scores.OrderByDescending(score => score.Sub1 + score.Sub2)
             .ThenByDescending(score => score.DxScore1 + score.DxScore2)
@@ -154,7 +154,7 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
         
         teams.ForEach(team => team.Players.ToList().ForEach(player =>
             {
-                Assert.Null(player.Score);
+                Assert.Null(player.Score!.Player);
                 Assert.Null(player.Team);
             }
         ));
