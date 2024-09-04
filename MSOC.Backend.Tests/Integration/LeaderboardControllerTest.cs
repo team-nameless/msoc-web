@@ -78,4 +78,93 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
         
         await gameDatabase.Database.EnsureDeletedAsync();
     }
+    
+    [Fact]
+    public async Task TeamLeaderboardTest()
+    {
+        await using var scope = _factory.Services.CreateAsyncScope();
+
+        var gameDatabase = scope.ServiceProvider.GetService<GameDatabaseService>()!;
+        await gameDatabase.Database.EnsureCreatedAsync();
+        
+        // add test players
+        for (ulong testId = 1001; testId <= 1032; testId++)
+        {
+            await _httpClient.PostAsync(
+                "/api/admin/add-score",
+                new StringContent(
+                    JsonSerializer.Serialize(new ScoreAdditionRequestModel
+                    {
+                        DiscordId = testId,
+                        FriendCode = 8090803305987,
+                        Sub1 = Random.Shared.Next(97, 101),
+                        DxScore1 = 6969,
+                        Sub2 = Random.Shared.Next(97, 101),
+                        DxScore2 = 7270,
+                        SchoolId = Random.Shared.Next(123, 150)
+                    }), Encoding.UTF8, "application/json")
+            );
+        }
+
+        // add test teams
+        for (ulong teamId = 1; teamId <= 8; teamId++)
+        {
+            await _httpClient.PostAsync(
+                "/api/admin/add-team",
+                new StringContent(
+                    JsonSerializer.Serialize(new TeamRequestModel
+                    {
+                        Name = $"MSOC-TestTeam-{teamId}",
+                    }), Encoding.UTF8, "application/json")
+            );
+        }
+        
+        // approve all scores
+        for (ulong scoreId = 1; scoreId <= 32; scoreId++)
+        {
+            await _httpClient.PatchAsync(
+                "/api/admin/approve-leaderboard",
+                new StringContent(JsonSerializer.Serialize(new ScoreApprovalRequestModel
+                {
+                    ScoreId = scoreId
+                }), Encoding.UTF8, "application/json")
+            );
+        }
+        
+        // perform team binding
+        for (ulong testId = 1001; testId <= 1032; testId++)
+        {
+            await _httpClient.PatchAsync(
+                "/api/admin/bind-player-to-team",
+                new StringContent(
+                    JsonSerializer.Serialize(new PlayerBindingRequestModel
+                    {
+                        PlayerId = testId,
+                        TeamId = (int) ((testId - 1001) / 4) + 1
+                    }), Encoding.UTF8, "application/json")
+            );
+        }
+        
+        var response = await _httpClient.GetAsync("/api/leaderboard/team");
+        var content = await response.Content.ReadAsStringAsync();
+        
+        var teams = JsonSerializer.Deserialize<List<Team>>(content, _jsonCaseInsensitive);
+        
+        Assert.StrictEqual(8, teams!.Count);
+        
+        teams.ForEach(team => team.Players.ToList().ForEach(player =>
+            {
+                Assert.Null(player.Score);
+                Assert.Null(player.Team);
+            }
+        ));
+        
+        var sortedTeams = teams
+            .OrderByDescending(team => team.Players.Sum(p => p.Score!.Sub1 + p.Score.Sub2))
+            .ThenByDescending(team => team.Players.Sum(p => p.Score!.DxScore1 + p.Score.DxScore2));
+        
+        Assert.Equal(teams, sortedTeams);
+        
+        await gameDatabase.Database.EnsureDeletedAsync();
+    }
 }
