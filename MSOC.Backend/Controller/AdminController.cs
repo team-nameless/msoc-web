@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using AngleSharp.Html.Dom;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Controller.RequestModel;
@@ -7,37 +9,68 @@ using MSOC.Backend.Service;
 namespace MSOC.Backend.Controller;
 
 [ApiController]
-[Route("api")]
+[Route("api/admin")]
 public class AdminController : ControllerBase
 {
     private readonly GameDatabaseService _gameDatabase;
-    private readonly TrackDatabaseService _trackDatabase;
+    private readonly MaimaiInquiryService _maimai;
     private readonly SchoolDatabaseService _schoolDatabase;
-    
-    public AdminController(GameDatabaseService gameDatabase, TrackDatabaseService trackDatabase, SchoolDatabaseService schoolDatabase)
+    private readonly TrackDatabaseService _trackDatabase;
+
+    public AdminController(
+        GameDatabaseService gameDatabase,
+        TrackDatabaseService trackDatabase,
+        SchoolDatabaseService schoolDatabase,
+        MaimaiInquiryService maimai
+    )
     {
         _gameDatabase = gameDatabase;
         _trackDatabase = trackDatabase;
         _schoolDatabase = schoolDatabase;
+        _maimai = maimai;
     }
-    
-    [HttpPost("admin/add-player")]
-    public IActionResult AddPlayer([FromBody] PlayerRequestModel player)
+
+    /// <summary>
+    ///     Add score to database.
+    /// </summary>
+    /// <param name="score">Score object.</param>
+    [HttpPost("add-score")]
+    public async Task<IActionResult> AddScore([FromBody] ScoreAdditionRequestModel score)
     {
+        var maiInfo = await _maimai.PerformFriendCodeLookupAsync(score.FriendCode);
+
         _gameDatabase.Players.Add(new Player
         {
-            Id = player.Id,
-            IsLeader = player.IsLeader,
-            Rating = player.Rating,
-            Username = player.Username,
+            Id = score.DiscordId,
+            FriendCode = score.FriendCode,
+            IsLeader = false,
+            Username = maiInfo[0].TextContent,
+            Rating = Convert.ToInt32(maiInfo[1].TextContent),
+            MaimaiAvatarUrl = (maiInfo[2] as IHtmlImageElement)!.Source!,
+            SchoolId = score.SchoolId
         });
-        
-        _gameDatabase.SaveChanges();
+
+        _gameDatabase.Scores.Add(new Score
+        {
+            IsAccepted = false,
+            PlayerId = score.DiscordId,
+            Sub1 = score.Sub1,
+            Sub2 = score.Sub2,
+            DxScore1 = score.DxScore1,
+            DxScore2 = score.DxScore2,
+            DateOfAdmission = DateTime.Now
+        });
+
+        await _gameDatabase.SaveChangesAsync();
 
         return Ok();
     }
-    
-    [HttpPost("admin/add-school")]
+
+    /// <summary>
+    ///     Add a school to database.
+    /// </summary>
+    /// <param name="school">School object.</param>
+    [HttpPost("add-school")]
     public IActionResult AddSchool([FromBody] SchoolRequestModel school)
     {
         _schoolDatabase.Schools.Add(new School
@@ -45,45 +78,34 @@ public class AdminController : ControllerBase
             Name = school.Name,
             Type = school.Type
         });
-        
+
         _schoolDatabase.SaveChanges();
 
         return Ok();
     }
-    
-    [HttpPost("admin/add-score/")]
-    public IActionResult AddScore([FromBody] ScoreRequestModel score)
-    {
-        _gameDatabase.Scores.Add(new Score
-        {
-            IsAccepted = false,
-            PlayerId = score.PlayerId,
-            Sub1 = score.Sub1,
-            Sub2 = score.Sub2,
-            DxScore1 = score.DxScore1,
-            DxScore2 = score.DxScore2,
-            DateOfAdmission = DateTime.Now,
-        });
-        
-        _gameDatabase.SaveChanges();
 
-        return Ok();
-    }
-    
-    [HttpPost("admin/add-team")]
+    /// <summary>
+    ///     Add a team to database.
+    /// </summary>
+    /// <param name="team">Team object.</param>
+    [HttpPost("add-team")]
     public IActionResult AddTeam([FromBody] TeamRequestModel team)
     {
         _gameDatabase.Teams.Add(new Team
         {
             Name = team.Name
         });
-        
+
         _gameDatabase.SaveChanges();
 
         return Ok();
     }
-    
-    [HttpPost("admin/add-track")]
+
+    /// <summary>
+    ///     Add a track to database.
+    /// </summary>
+    /// <param name="track">Track object.</param>
+    [HttpPost("add-track")]
     public IActionResult AddTrack([FromBody] TrackAdditionRequestModel track)
     {
         _trackDatabase.Tracks.Add(new Track
@@ -97,67 +119,81 @@ public class AdminController : ControllerBase
             Version = track.Version,
             Type = track.Type,
             HasBeenPicked = false
-        }); 
-        
+        });
+
         _trackDatabase.SaveChanges();
 
         return Ok();
     }
-    
-    [HttpGet("admin/bind-team")]
-    public IActionResult BindTeamToPlayer(int teamId, ulong playerId)
-    {
-        Team t = _gameDatabase.Teams.First(t => t.Id == teamId);
-        Player p = _gameDatabase.Players.First(p => p.Id == playerId);
-        
-        t.Players.Add(p);
-        p.Team = t;
-        
-        _gameDatabase.SaveChanges();
 
+    /// <summary>
+    ///     Bind a player to a team.
+    /// </summary>
+    /// <param name="bind">Bind object.</param>
+    [HttpPatch("bind-player-to-team")]
+    public IActionResult BindPlayerToTeam(
+        [FromBody] PlayerBindingRequestModel bind
+    )
+    {
+        var player = _gameDatabase.Players.FirstOrDefault(p => p.Id == bind.PlayerId);
+        var team = _gameDatabase.Teams.FirstOrDefault(t => t.Id == bind.TeamId);
+
+        if (player is null || team is null) return NotFound();
+
+        if (team.Players.Count == 4) return BadRequest("Team is already full.");
+            
+        team.Players.Add(player);
+        _gameDatabase.SaveChanges();
+        
         return Ok();
     }
     
-    [HttpGet("admin/bind-school")]
-    public IActionResult BindSchoolToPlayer(int schoolId, ulong playerId)
+    /// <summary>
+    ///     Approve an entry on the leaderboard.
+    /// </summary>
+    /// <param name="approval">Approval object.</param>
+    [HttpPatch("approve-leaderboard")]
+    public IActionResult ApproveScore(
+        [FromBody] ScoreApprovalRequestModel approval
+    )
     {
-        School s = _schoolDatabase.Schools.First(s => s.Id == schoolId);
-        Player p = _gameDatabase.Players.First(p => p.Id == playerId);
-        
-        p.SchoolId = s.Id;
-        
-        _gameDatabase.SaveChanges();
+        var foundScore = _gameDatabase.Scores.FirstOrDefault(score => score.Id == approval.ScoreId);
 
-        return Ok();
-    }
-    
-    [HttpGet("leaderboard/approve")]
-    public IActionResult ApproveScore(ulong scoreId)
-    {
-        var scores = _gameDatabase.Scores.Where(score => score.Id == scoreId);
-        
-        var player = _gameDatabase.Players
-            .Include(p => p.Team)
-            .Include(p => p.SchoolId)
-            .Include(p => p.Score)
-            .First(p => p.Id == 6969);
+        if (foundScore == null) return NotFound();
 
-        foreach (var score in scores)
-        {
-            score.IsAccepted = true;
-            score.DateOfAcceptance = DateTime.Now;
-        }
-
-        // Do an update on the entire database.
-        var _ = _gameDatabase.Scores
-            .Where(score => score.IsAccepted)
-            .OrderByDescending(score => score.Sub1 + score.Sub2)
-            .ThenByDescending(score => score.DxScore1 + score.DxScore2)
-            .ThenBy(score => score.DateOfAdmission);
+        foundScore.IsAccepted = true;
+        foundScore.DateOfAcceptance = DateTime.Now;
 
         // TODO: Hit the SignalR endpoint to yell at the front end.
-
+        
+        _gameDatabase.Update(foundScore);
         _gameDatabase.SaveChanges();
+        
+        return Ok();
+    }
+
+    /// <summary>
+    ///     Marks a track as picked.
+    /// </summary>
+    /// <param name="trackMark">Track marking object.</param>
+    [HttpPatch("mark-selected-track")]
+    public IActionResult MarkTrackAsPicked(
+        [FromBody] TrackMarkingRequestModel trackMark
+    )
+    {
+        if (trackMark.TrackId is < 1 or > 626) return BadRequest("ID can only be [1-626]");
+
+        var foundedTrack = _trackDatabase.Tracks
+            .FirstOrDefault(track => track.Id == trackMark.TrackId);
+
+        if (foundedTrack == null) return NotFound();
+
+        if (!trackMark.Testing)
+        {
+            foundedTrack.HasBeenPicked = true;
+            _trackDatabase.Update(foundedTrack);
+            _trackDatabase.SaveChanges();
+        }
 
         return Ok();
     }

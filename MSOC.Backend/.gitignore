@@ -6,9 +6,12 @@ config.json
 *.db-shm
 *.db-wal
 
-# We make an exclusion for tracks database.
-# Composing this is a real pain in the ass.
+# We make an exclusion for tracks and schools database.
+# Composing them is a real pain in the ass.
 !tracks.db
+!schools.db
 
 # Shhh...
 Scripts/MSOC raw track list.csv
+Scripts/daihoc.csv
+Scripts/thpt.csv

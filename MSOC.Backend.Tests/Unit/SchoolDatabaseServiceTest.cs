@@ -3,11 +3,11 @@ using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Tests.Unit;
 
-public class TrackDatabaseServiceTest : IClassFixture<GameApplicationFactory<Program>>
+public class SchoolDatabaseServiceTest : IClassFixture<GameApplicationFactory<Program>>
 {
     private readonly GameApplicationFactory<Program> _factory;
 
-    public TrackDatabaseServiceTest(GameApplicationFactory<Program> factory)
+    public SchoolDatabaseServiceTest(GameApplicationFactory<Program> factory)
     {
         _factory = factory;
     }
@@ -16,20 +16,20 @@ public class TrackDatabaseServiceTest : IClassFixture<GameApplicationFactory<Pro
     public void DatabaseInjectionWorks()
     {
         using var scope = _factory.Services.CreateScope();
-        var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
+        var schoolDatabase = scope.ServiceProvider.GetService<SchoolDatabaseService>()!;
         
-        trackDatabase.Database.EnsureCreated();
+        schoolDatabase.Database.EnsureCreated();
         
-        Assert.NotNull(trackDatabase);
+        Assert.NotNull(schoolDatabase);
     }
     
     [Fact]
     public void AllTablesExists()
     {
         using var scope = _factory.Services.CreateScope();
-        var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
+        var schoolDatabase = scope.ServiceProvider.GetService<SchoolDatabaseService>()!;
         
-        var _ = trackDatabase.Tracks;
+        var _ = schoolDatabase.Schools;
         
         Assert.True(true);
     }
@@ -38,8 +38,8 @@ public class TrackDatabaseServiceTest : IClassFixture<GameApplicationFactory<Pro
     public void AllEntriesExists()
     {
         using var scope = _factory.Services.CreateScope();
-        var trackDatabase = scope.ServiceProvider.GetService<TrackDatabaseService>()!;
+        var schoolDatabase = scope.ServiceProvider.GetService<SchoolDatabaseService>()!;
         
-        Assert.StrictEqual(626, trackDatabase.Tracks.Count());
+        Assert.StrictEqual(256, schoolDatabase.Schools.Count());
     }
 }

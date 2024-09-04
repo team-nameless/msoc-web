@@ -50,7 +50,20 @@ public class MaimaiInquiryService
         var html = await result.Content.ReadAsStreamAsync();
         var document = _parser.ParseDocument(html).All;
 
-        return document.Where(x =>
-            x is { LocalName: "div", ClassName: "name_block f_l f_16" or "rating_block" }).ToArray();
+        try
+        {
+            List<IElement> results = new()
+            {
+                document.First(x => x.LocalName == "div" && x.ClassName == "name_block f_l f_16"),
+                document.First(x => x.LocalName == "div" && x.ClassName == "rating_block"),
+                document.First(x => x.LocalName == "img" && x.ClassName == "w_112 f_l")
+            };
+
+            return results.ToArray();
+        }
+        catch (InvalidOperationException)
+        {
+            return [];
+        }
     }
 }

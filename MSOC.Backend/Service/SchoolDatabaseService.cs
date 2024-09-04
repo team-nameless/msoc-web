@@ -1,4 +1,3 @@
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Database.Models;
 
@@ -10,12 +9,12 @@ namespace MSOC.Backend.Service;
 /// </summary>
 public class SchoolDatabaseService : DbContext
 {
-    public DbSet<School> Schools { get; set; }
-    
     public SchoolDatabaseService(DbContextOptions<SchoolDatabaseService> options) : base(options)
     {
     }
-    
+
+    public DbSet<School> Schools { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using MSOC.Backend.Enum;
 
 namespace MSOC.Backend.Database.Models;
 
@@ -8,9 +9,14 @@ namespace MSOC.Backend.Database.Models;
 public class Player
 {
     /// <summary>
-    ///     maimai Friend code associated with this user.
+    ///     Discord ID associated with this player.
     /// </summary>
     public ulong Id { get; set; }
+
+    /// <summary>
+    ///     maimai Friend code associated with this player.
+    /// </summary>
+    public ulong FriendCode { get; set; }
 
     /// <summary>
     ///     maimai username.
@@ -27,11 +33,17 @@ public class Player
     ///     Whether this player is a leader for their team.
     /// </summary>
     public bool IsLeader { get; set; }
-    
+
     /// <summary>
     ///     The school this player belongs to.
     /// </summary>
     public int SchoolId { get; set; }
+
+    /// <summary>
+    ///     maimai avatar URL.
+    /// </summary>
+    [MaxLength(256)]
+    public string MaimaiAvatarUrl { get; set; } = "";
 
     /// <summary>
     ///     The team this player belongs to.
@@ -42,4 +54,9 @@ public class Player
     ///     The score associated with this player.
     /// </summary>
     public Score? Score { get; set; }
+
+    /// <summary>
+    ///     MSOC membership level.
+    /// </summary>
+    public MembershipLevel MembershipLevel { get; set; } = MembershipLevel.MSOC;
 }

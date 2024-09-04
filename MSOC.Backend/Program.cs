@@ -1,5 +1,8 @@
+using System.Reflection;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using MSOC.Backend.Middleware;
 using MSOC.Backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +15,7 @@ builder.Configuration
 // :thinking:
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+builder.Services.AddHealthChecks();
 
 // Add crapwares to the controller    
 builder.Services
@@ -22,12 +26,36 @@ builder.Services
     .AddRouting()
     .AddEndpointsApiExplorer()
     .AddHttpContextAccessor()
-    .AddSwaggerGen();
-
-// Enable services at startup time.
-builder.Services
-    .ActivateSingleton<IConfiguration>()
-    .ActivateSingleton<MaimaiInquiryService>();
+    .AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "MSOC API", Version = "v1" });
+        c.IncludeXmlComments(Assembly.GetExecutingAssembly());
+        
+        c.AddSecurityDefinition("Basic", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Basic",
+            BearerFormat = "String",
+            In = ParameterLocation.Header,
+            Description = "Authorization header value using the Basic scheme."
+        });
+        
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Basic"
+                    }
+                },
+                []
+            }
+        });
+    });
 
 var app = builder.Build();
 
@@ -36,11 +64,19 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.DefaultModelsExpandDepth(-1);
+    });
     app.UseDeveloperExceptionPage();
 }
 
 app
+    .UseWhen(
+        ctx => ctx.Request.Path.StartsWithSegments("/api/admin"),
+        cfg => cfg.UseMiddleware<AdminControllerAuthentication>()
+    )
+    .UseHealthChecks("/api/healthcheck")
     .UseHsts()
     .UseRouting()
     .UseHttpsRedirection()

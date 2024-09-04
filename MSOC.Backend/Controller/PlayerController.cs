@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MSOC.Backend.Database.Models;
 using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Controller;
@@ -7,27 +9,41 @@ namespace MSOC.Backend.Controller;
 [Route("api/player")]
 public class PlayerController : ControllerBase
 {
-    private readonly MaimaiInquiryService _maimai;
+    private readonly GameDatabaseService _gameDatabase;
 
-    public PlayerController(MaimaiInquiryService maimai)
+    public PlayerController(GameDatabaseService gameDatabase)
     {
-        _maimai = maimai;
+        _gameDatabase = gameDatabase;
     }
 
-    [HttpPost("query")]
-    public async Task<IActionResult> QueryUserByFriendCode([FromBody] ulong friendCode)
+    /// <summary>
+    ///     Get player data.
+    /// </summary>
+    /// <param name="lookupKey">Key index to look up.</param>
+    /// <param name="queryType">Type of the key - either "discord" or "friend_code".</param>
+    [HttpGet("get")]
+    [ProducesResponseType(typeof(Player), 200, "application/json")]
+    public IActionResult GetPlayer(
+        [FromQuery(Name = "id")] ulong lookupKey,
+        [FromQuery(Name = "type")] string queryType = "friend_code"
+    )
     {
-        var needed = await _maimai.PerformFriendCodeLookupAsync(friendCode);
+        var defaultQuery = _gameDatabase.Players
+            .Include(p => p.Score)
+            .Include(p => p.Team);
 
-        if (needed.Length == 0) return BadRequest("Unable to retrieve needed information.");
-
-        var name = needed[0].TextContent;
-        var rating = needed[1].TextContent;
-
-        return new JsonResult(new Dictionary<string, string>
+        var player = queryType switch
         {
-            ["name"] = name,
-            ["rating"] = rating
-        });
+            "friend_code" => defaultQuery.FirstOrDefault(p => p.FriendCode == lookupKey),
+            "discord" => defaultQuery.FirstOrDefault(p => p.Id == lookupKey),
+            _ => null
+        };
+        
+        if (player == null) return NotFound();
+        
+        // we prevent recursion?
+        player.Score!.Player = null!;
+
+        return Ok(player);
     }
 }
