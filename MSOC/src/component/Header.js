@@ -14,7 +14,7 @@ export default function Header() {
 					<a href="/" className="text-xl font-semibold leading-6 text-black">
 						Trang Chủ
 					</a>
-					<a href="/" className="text-xl font-semibold leading-6 text-black">
+					<a href="/info" className="text-xl font-semibold leading-6 text-black">
 						Thông Tin
 					</a>
 					<a href="/leaderboard" className="text-xl font-semibold leading-6 text-black">
