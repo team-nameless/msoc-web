@@ -157,17 +157,17 @@ public class AdminController : ControllerBase
         [FromBody] ScoreApprovalRequestModel approval
     )
     {
-        var foundScore = _gameDatabase.Scores.FirstOrDefault(score => score.Id == approval.ScoreId);
-
-        if (foundScore == null) return NotFound();
-
-        foundScore.IsAccepted = true;
-        foundScore.DateOfAcceptance = DateTime.Now;
-
-        // TODO: Hit the SignalR endpoint to yell at the front end.
+        _gameDatabase.Scores
+            .Select(score => new { score.Id, score.IsAccepted, score.DateOfAcceptance })
+            .Where(score => score.Id == approval.ScoreId)
+            .ExecuteUpdate(
+                score =>
+                    score
+                        .SetProperty(s => s.IsAccepted, true)
+                        .SetProperty(s => s.DateOfAcceptance, DateTime.Now)
+            );
         
-        _gameDatabase.Update(foundScore);
-        _gameDatabase.SaveChanges();
+        // TODO: Hit the SignalR endpoint to yell at the front end.
         
         return Ok();
     }
@@ -183,17 +183,14 @@ public class AdminController : ControllerBase
     {
         if (trackMark.TrackId is < 1 or > 626) return BadRequest("ID can only be [1-626]");
 
-        var foundedTrack = _trackDatabase.Tracks
-            .FirstOrDefault(track => track.Id == trackMark.TrackId);
-
-        if (foundedTrack == null) return NotFound();
-
-        if (!trackMark.Testing)
-        {
-            foundedTrack.HasBeenPicked = true;
-            _trackDatabase.Update(foundedTrack);
-            _trackDatabase.SaveChanges();
-        }
+        _trackDatabase.Tracks
+            .Select(track => new { track.Id, track.HasBeenPicked })
+            .Where(track => track.Id == trackMark.TrackId)
+            .ExecuteUpdate(
+                track =>
+                    track
+                        .SetProperty(t => t.HasBeenPicked, !trackMark.Testing)
+            );
 
         return Ok();
     }
