@@ -20,7 +20,7 @@ builder.Services.AddHealthChecks();
 // Add crapwares to the controller    
 builder.Services
     .AddSingleton<MaimaiInquiryService>()
-    .AddDbContext<GameDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=MSOC.db;")))
+    .AddDbContext<GameDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=MSOC.db;"), act => act.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)))
     .AddDbContext<TrackDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=tracks.db;")))
     .AddDbContext<SchoolDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=schools.db;")))
     .AddRouting()
