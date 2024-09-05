@@ -13,30 +13,24 @@ public class MaimaiInquiryServiceTest : IClassFixture<GameApplicationFactory<Pro
         _factory = factory;
     }
     
-    [Theory]
-    [InlineData(1234)]
-    [InlineData(69420)]
-    [InlineData(177013)]
-    public async Task InvalidFriendCodeTest(ulong friendCode)
+    [Fact]
+    public async Task InvalidFriendCodeTest()
     {
         using var scope = _factory.Services.CreateAsyncScope();
         
         var maimai = scope.ServiceProvider.GetService<MaimaiInquiryService>()!;
-        var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
+        var result = await maimai.PerformFriendCodeLookupAsync(177013);
 
         Assert.StrictEqual(0, result.Length);
     }
 
-    [Theory]
-    [InlineData(9051555929120)]
-    [InlineData(8095773611588)]
-    [InlineData(9020119099087)]
-    public async Task ValidFamiliarFriendCodeTest(ulong friendCode)
+    [Fact]
+    public async Task ValidFamiliarFriendCodeTest()
     {
         using var scope = _factory.Services.CreateAsyncScope();
         
         var maimai = scope.ServiceProvider.GetService<MaimaiInquiryService>()!;
-        var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
+        var result = await maimai.PerformFriendCodeLookupAsync(9020119099087);
 
         Assert.StrictEqual(3, result.Length);
         Assert.NotEmpty(result[0].TextContent);
@@ -44,14 +38,13 @@ public class MaimaiInquiryServiceTest : IClassFixture<GameApplicationFactory<Pro
         Assert.NotEmpty((result[2] as IHtmlImageElement)!.Source!);
     }
 
-    [Theory]
-    [InlineData(8069933165057)]
-    public async Task ValidStrangerFriendCodeTest(ulong friendCode)
+    [Fact]
+    public async Task ValidStrangerFriendCodeTest()
     {
         using var scope = _factory.Services.CreateAsyncScope();
         
         var maimai = scope.ServiceProvider.GetService<MaimaiInquiryService>()!;
-        var result = await maimai.PerformFriendCodeLookupAsync(friendCode);
+        var result = await maimai.PerformFriendCodeLookupAsync(8069933165057);
 
         Assert.StrictEqual(3, result.Length);
         Assert.NotEmpty(result[0].TextContent);

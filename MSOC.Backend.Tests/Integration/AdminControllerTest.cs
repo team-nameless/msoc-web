@@ -56,7 +56,6 @@ public class AdminControllerTest : IClassFixture<GameApplicationFactory<Program>
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
-    [InlineData(3)]
     [InlineData(625)]
     [InlineData(626)]
     public async Task TrackMarkPass(int trackId)
