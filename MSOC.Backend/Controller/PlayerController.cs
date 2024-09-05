@@ -29,6 +29,7 @@ public class PlayerController : ControllerBase
     )
     {
         var defaultQuery = _gameDatabase.Players
+            .AsNoTracking()
             .Include(p => p.Score)
             .Include(p => p.Team);
 

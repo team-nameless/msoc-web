@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Database.Models;
 using MSOC.Backend.Service;
 
@@ -28,6 +29,7 @@ public class SchoolController : ControllerBase
         if (schoolId is < 1 or > 256) return BadRequest("ID can only be [1-256]");
 
         var foundedTrack = _schoolDatabase.Schools
+            .AsNoTracking()
             .FirstOrDefault(track => track.Id == schoolId);
 
         if (foundedTrack == null) return NotFound();

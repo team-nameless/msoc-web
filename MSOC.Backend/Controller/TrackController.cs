@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MSOC.Backend.Database.Models;
 using MSOC.Backend.Service;
 
@@ -31,8 +32,9 @@ public class TrackController : ControllerBase
         if (minDiff < 1 || maxDiff > 15) return BadRequest("[min_diff; max_diff] must be in range of [1.0; 15.0]");
 
         var foundedTracks = _trackDatabase.Tracks
-            .Where(track => !track.HasBeenPicked)
+            .AsNoTracking()
             .Where(track => minDiff <= track.Constant && track.Constant <= maxDiff)
+            .Where(track => !track.HasBeenPicked)
             .ToArray();
 
         if (foundedTracks.Length == 0) return NotFound();
@@ -55,6 +57,7 @@ public class TrackController : ControllerBase
         if (trackId is < 1 or > 626) return BadRequest("ID can only be [1-626]");
 
         var foundedTrack = _trackDatabase.Tracks
+            .AsNoTracking()
             .FirstOrDefault(track => track.Id == trackId);
 
         if (foundedTrack == null) return NotFound();

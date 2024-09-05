@@ -27,13 +27,15 @@ public class LeaderboardController : ControllerBase
         if (page < 1) return BadRequest("Page number must be at least 1");
 
         var sortedScores = _gameDatabase.Scores
+            .AsNoTracking()
             .Where(score => score.IsAccepted)
             .OrderByDescending(score => score.Sub1 + score.Sub2)
             .ThenByDescending(score => score.DxScore1 + score.DxScore2)
             .ThenBy(score => score.DateOfAdmission)
             .Skip(10 * (page - 1))
             .Take(10)
-            .Include(s => s.Player);
+            .Include(s => s.Player)
+            .ToList();
 
         // recursion prevention
         foreach (var score in sortedScores) score.Player.Score = null!;
@@ -49,17 +51,18 @@ public class LeaderboardController : ControllerBase
     public IActionResult QueryTeamLeaderboard()
     {
         var sortedTeams = _gameDatabase.Teams
+            .AsNoTracking()
             .Include(t => t.Players)
             .ThenInclude(p => p.Score)
             .OrderByDescending(team => team.Players.Count)
             .Where(team => team.Players.Count(p => p.Score!.IsAccepted) > 0)
             .OrderByDescending(team => team.Players.Sum(p => p.Score!.Sub1 + p.Score.Sub2))
             .ThenByDescending(team => team.Players.Sum(p => p.Score!.DxScore1 + p.Score.DxScore2))
-            .Take(8);
+            .Take(8)
+            .ToList();
 
         // recursion prevention
-        foreach (var team in sortedTeams)
-        foreach (var player in team.Players)
+        foreach (var player in sortedTeams.SelectMany(team => team.Players))
         {
             player.Score!.Player = null!;
             player.Team = null!;
