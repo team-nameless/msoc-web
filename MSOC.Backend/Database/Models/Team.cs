@@ -6,7 +6,6 @@ namespace MSOC.Backend.Database.Models;
 /// <summary>
 ///     Representing a team.
 /// </summary>
-[Index(nameof(Name), IsUnique = true)]
 public class Team
 {
     /// <summary>

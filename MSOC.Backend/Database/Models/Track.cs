@@ -7,7 +7,6 @@ namespace MSOC.Backend.Database.Models;
 /// <summary>
 ///     Representing a track in maimai.
 /// </summary>
-[Index(nameof(Title), nameof(Difficulty), nameof(Type), IsUnique = true)]
 public class Track
 {
     /// <summary>
