@@ -18,7 +18,7 @@ public class ApiKeyAuthorize : Attribute, IAsyncAuthorizationFilter
             return;
         }
 
-        var apiKey = extractedApiKey.ToString().Replace("Bearer ", "");
+        var apiKey = extractedApiKey.ToString().Replace("Basic ", "");
         var configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
         var validApiKey = configuration.GetValue<string>("API:Authorization")!;
 
