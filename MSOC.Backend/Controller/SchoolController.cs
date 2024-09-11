@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MSOC.Backend.Controller.RequestModel;
 using MSOC.Backend.Database.Models;
+using MSOC.Backend.Middleware;
 using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Controller;
@@ -35,5 +37,24 @@ public class SchoolController : ControllerBase
         if (foundedTrack == null) return NotFound();
 
         return Ok(foundedTrack);
+    }
+
+    /// <summary>
+    ///     Add a school to database.
+    /// </summary>
+    /// <param name="school">School object.</param>
+    [HttpPost("add")]
+    [ApiKeyAuthorize]
+    public IActionResult AddSchool([FromBody] SchoolRequestModel school)
+    {
+        _schoolDatabase.Schools.Add(new School
+        {
+            Name = school.Name,
+            Type = school.Type
+        });
+
+        _schoolDatabase.SaveChanges();
+
+        return Ok();
     }
 }
