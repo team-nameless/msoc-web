@@ -16,19 +16,19 @@ public class GameApplicationFactory<TProgram> : WebApplicationFactory<TProgram> 
             var gameDatabase = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<GameDatabaseService>));
             var trackDatabase = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<TrackDatabaseService>));
             var schoolDatabase = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<SchoolDatabaseService>));
-            
+
             if (gameDatabase != null) services.Remove(gameDatabase);
             if (trackDatabase != null) services.Remove(trackDatabase);
             if (schoolDatabase != null) services.Remove(schoolDatabase);
-            
+
             var path = Directory.CreateDirectory(AppContext.BaseDirectory)
                 .Parent!.Parent!.Parent!.Parent!.ToString();
-        
+
             services.AddDbContext<SchoolDatabaseService>(
                 o => o.UseSqlite($"Filename={path}/MSOC.Backend/schools.db")
                 // ServiceLifetime.Transient
             );
-        
+
             services.AddDbContext<TrackDatabaseService>(
                 o => o.UseSqlite($"Filename={path}/MSOC.Backend/tracks.db")
                 // ServiceLifetime.Transient

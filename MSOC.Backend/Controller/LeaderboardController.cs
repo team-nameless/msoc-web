@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MSOC.Backend.Controller.RequestModel;
 using MSOC.Backend.Database.Models;
+using MSOC.Backend.Middleware;
 using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Controller;
@@ -69,5 +71,30 @@ public class LeaderboardController : ControllerBase
         }
 
         return Ok(sortedTeams);
+    }
+
+    /// <summary>
+    ///     Approve an entry on the leaderboard.
+    /// </summary>
+    /// <param name="approval">Approval object.</param>
+    [HttpPatch("approve")]
+    [ApiKeyAuthorize]
+    public IActionResult ApproveScore(
+        [FromBody] ScoreApprovalRequestModel approval
+    )
+    {
+        _gameDatabase.Scores
+            .Select(score => new { score.Id, score.IsAccepted, score.DateOfAcceptance })
+            .Where(score => score.Id == approval.ScoreId)
+            .ExecuteUpdate(
+                score =>
+                    score
+                        .SetProperty(s => s.IsAccepted, true)
+                        .SetProperty(s => s.DateOfAcceptance, DateTime.Now)
+            );
+
+        // TODO: Hit the SignalR endpoint to yell at the front end.
+
+        return Ok();
     }
 }

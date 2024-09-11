@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MSOC.Backend.Controller.RequestModel;
 using MSOC.Backend.Database.Models;
+using MSOC.Backend.Middleware;
 using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Controller;
@@ -63,5 +65,55 @@ public class TrackController : ControllerBase
         if (foundedTrack == null) return NotFound();
 
         return Ok(foundedTrack);
+    }
+
+    /// <summary>
+    ///     Add a track to database.
+    /// </summary>
+    /// <param name="track">Track object.</param>
+    [HttpPost("add")]
+    [ApiKeyAuthorize]
+    public IActionResult AddTrack([FromBody] TrackAdditionRequestModel track)
+    {
+        _trackDatabase.Tracks.Add(new Track
+        {
+            Title = track.Title,
+            Artist = track.Artist,
+            Category = track.Category,
+            Constant = track.Constant,
+            CoverImageUrl = track.CoverImageUrl,
+            Difficulty = track.Difficulty,
+            Version = track.Version,
+            Type = track.Type,
+            HasBeenPicked = false
+        });
+
+        _trackDatabase.SaveChanges();
+
+        return Ok();
+    }
+
+    /// <summary>
+    ///     Marks a track as picked.
+    /// </summary>
+    /// <param name="trackMark">Track marking object.</param>
+    [HttpPatch("mark-selected")]
+    [ApiKeyAuthorize]
+    public IActionResult MarkTrackAsPicked(
+        [FromBody] TrackMarkingRequestModel trackMark
+    )
+    {
+        if (trackMark.TrackId is < 1 or > 626) return BadRequest("ID can only be [1-626]");
+
+        _trackDatabase.Tracks
+            .Select(track => new { track.Id, track.HasBeenPicked })
+            .Where(track => track.Id == trackMark.TrackId)
+            .ExecuteUpdate(
+                track =>
+                    track
+                        .SetProperty(t => t.HasBeenPicked, !trackMark.Testing)
+            );
+
+        return Ok();
     }
 }

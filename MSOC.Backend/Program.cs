@@ -2,7 +2,6 @@ using System.Reflection;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using MSOC.Backend.Middleware;
 using MSOC.Backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +19,7 @@ builder.Services.AddHealthChecks();
 // Add crapwares to the controller    
 builder.Services
     .AddSingleton<MaimaiInquiryService>()
+    .AddSingleton<IConfiguration>(builder.Configuration)
     .AddDbContext<GameDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=MSOC.db;"), act => act.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)))
     .AddDbContext<TrackDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=tracks.db;")))
     .AddDbContext<SchoolDatabaseService>(o => o.UseSqlite(new SqliteConnection("Filename=schools.db;")))
@@ -30,7 +30,7 @@ builder.Services
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "MSOC API", Version = "v1" });
         c.IncludeXmlComments(Assembly.GetExecutingAssembly());
-        
+
         c.AddSecurityDefinition("Basic", new OpenApiSecurityScheme
         {
             Name = "Authorization",
@@ -40,7 +40,7 @@ builder.Services
             In = ParameterLocation.Header,
             Description = "Authorization header value using the Basic scheme."
         });
-        
+
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {
@@ -72,10 +72,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app
-    .UseWhen(
-        ctx => ctx.Request.Path.StartsWithSegments("/api/admin"),
-        cfg => cfg.UseMiddleware<AdminControllerAuthentication>()
-    )
+    // .UseWhen(
+    //     ctx => ctx.Request.Path.StartsWithSegments("/api/admin"),
+    //     cfg => cfg.UseMiddleware<AdminControllerAuthentication>()
+    // )
     .UseHealthChecks("/api/healthcheck")
     .UseHsts()
     .UseRouting()
