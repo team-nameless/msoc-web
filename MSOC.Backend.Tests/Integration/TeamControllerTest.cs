@@ -12,13 +12,13 @@ using MSOC.Backend.Service;
 
 namespace MSOC.Backend.Tests.Integration;
 
-public class PlayerControllerTest : IClassFixture<GameApplicationFactory<Program>>, IDisposable
+public class TeamControllerTest : IClassFixture<GameApplicationFactory<Program>>, IDisposable
 {
     private readonly GameApplicationFactory<Program> _factory;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonCaseInsensitive = new() { PropertyNameCaseInsensitive = true };
 
-    public PlayerControllerTest(GameApplicationFactory<Program> factory)
+    public TeamControllerTest(GameApplicationFactory<Program> factory)
     {
         _factory = factory;
 
@@ -46,10 +46,35 @@ public class PlayerControllerTest : IClassFixture<GameApplicationFactory<Program
         gameDatabase.Database.EnsureDeleted();
     }
 
-    [Theory]
-    [InlineData(317587311279734784, "discord")]
-    [InlineData(8090803305987, "friend_code")]
-    public async Task PlayerQueryTest(ulong key, string type)
+    [Fact]
+    public async Task TeamQueryTest()
+    {
+        await using var scope = _factory.Services.CreateAsyncScope();
+
+        var gameDatabase = scope.ServiceProvider.GetService<GameDatabaseService>()!;
+        await gameDatabase.Database.EnsureCreatedAsync();
+
+        var response = await _httpClient.PostAsync(
+            "/api/teams/add",
+            new StringContent(
+                JsonSerializer.Serialize(new TeamRequestModel
+                {
+                    Name = "MSOC"
+                }), Encoding.UTF8, "application/json")
+        );
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var team = gameDatabase.Teams.FirstOrDefault(t => t.Name == "MSOC");
+
+        Assert.NotNull(team);
+        Assert.Equal("MSOC", team.Name);
+
+        await gameDatabase.Database.EnsureDeletedAsync();
+    }
+
+    [Fact]
+    public async Task PlayerAndTeamBindingTest()
     {
         await using var scope = _factory.Services.CreateAsyncScope();
 
@@ -72,15 +97,33 @@ public class PlayerControllerTest : IClassFixture<GameApplicationFactory<Program
                 }), Encoding.UTF8, "application/json")
         );
 
-        var response = await _httpClient.GetAsync($"/api/player/score?id={key}&type={type}");
-        var content = await response.Content.ReadAsStringAsync();
-        System.Console.WriteLine(content);
+        await _httpClient.PostAsync(
+            "/api/teams/add",
+            new StringContent(
+                JsonSerializer.Serialize(new TeamRequestModel
+                {
+                    Name = "MSOC"
+                }), Encoding.UTF8, "application/json")
+        );
 
-        var data = JsonSerializer.Deserialize<Player>(content, _jsonCaseInsensitive);
+        var response = await _httpClient.PatchAsync(
+            "/api/teams/bind-player",
+            new StringContent(
+                JsonSerializer.Serialize(new PlayerBindingRequestModel
+                {
+                    PlayerId = 317587311279734784,
+                    TeamId = 1
+                }), Encoding.UTF8, "application/json")
+        );
 
-        Assert.NotNull(data);
-        Assert.NotNull(data.Score);
-        Assert.Null(data.Score.Player);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var editedTeam = gameDatabase.Teams
+            .Include(t => t.Players)
+            .First(t => t.Name == "MSOC");
+
+        Assert.NotNull(editedTeam);
+        Assert.StrictEqual(1, editedTeam.Players.Count);
 
         await gameDatabase.Database.EnsureDeletedAsync();
     }

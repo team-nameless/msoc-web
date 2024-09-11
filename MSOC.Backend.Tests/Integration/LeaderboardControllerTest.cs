@@ -14,12 +14,12 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
     private readonly GameApplicationFactory<Program> _factory;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonCaseInsensitive = new() { PropertyNameCaseInsensitive = true };
-    
+
     public LeaderboardControllerTest(GameApplicationFactory<Program> factory)
     {
         _factory = factory;
         var configuration = _factory.Services.GetService<IConfiguration>()!;
-        
+
         _httpClient = factory.CreateClient();
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
             "Basic",
@@ -34,11 +34,11 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
 
         var gameDatabase = scope.ServiceProvider.GetService<GameDatabaseService>()!;
         await gameDatabase.Database.EnsureCreatedAsync();
-        
+
         for (ulong testId = 1001; testId <= 1005; testId++)
         {
             await _httpClient.PostAsync(
-                "/api/admin/add-score",
+                "/api/player/score",
                 new StringContent(
                     JsonSerializer.Serialize(new ScoreAdditionRequestModel
                     {
@@ -55,7 +55,7 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
 
         for (ulong testId = 1; testId <= 5; testId++)
             await _httpClient.PatchAsync(
-                "/api/admin/approve-leaderboard",
+                "/api/leaderboard/approve",
                 new StringContent(JsonSerializer.Serialize(new ScoreApprovalRequestModel
                 {
                     ScoreId = testId
@@ -64,21 +64,21 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
 
         var response = await _httpClient.GetAsync("/api/leaderboard/individual?page=1");
         var content = await response.Content.ReadAsStringAsync();
-        
+
         var scores = JsonSerializer.Deserialize<List<Score>>(content, _jsonCaseInsensitive);
-        
+
         Assert.StrictEqual(5, scores!.Count);
         scores.ForEach(score => Assert.Null(score.Player.Score));
 
         var sortedScores = scores.OrderByDescending(score => score.Sub1 + score.Sub2)
             .ThenByDescending(score => score.DxScore1 + score.DxScore2)
             .ThenBy(score => score.DateOfAdmission);
-        
+
         Assert.Equal(scores, sortedScores);
-        
+
         await gameDatabase.Database.EnsureDeletedAsync();
     }
-    
+
     [Fact]
     public async Task TeamLeaderboardTest()
     {
@@ -86,12 +86,12 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
 
         var gameDatabase = scope.ServiceProvider.GetService<GameDatabaseService>()!;
         await gameDatabase.Database.EnsureCreatedAsync();
-        
+
         // add test players
         for (ulong testId = 1001; testId <= 1032; testId++)
         {
             await _httpClient.PostAsync(
-                "/api/admin/add-score",
+                "/api/player/score",
                 new StringContent(
                     JsonSerializer.Serialize(new ScoreAdditionRequestModel
                     {
@@ -110,7 +110,7 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
         for (ulong teamId = 1; teamId <= 8; teamId++)
         {
             await _httpClient.PostAsync(
-                "/api/admin/add-team",
+                "/api/teams/add",
                 new StringContent(
                     JsonSerializer.Serialize(new TeamRequestModel
                     {
@@ -118,53 +118,95 @@ public class LeaderboardControllerTest : IClassFixture<GameApplicationFactory<Pr
                     }), Encoding.UTF8, "application/json")
             );
         }
-        
+
         // approve all scores
         for (ulong scoreId = 1; scoreId <= 32; scoreId++)
         {
             await _httpClient.PatchAsync(
-                "/api/admin/approve-leaderboard",
+                "/api/leaderboard/approve",
                 new StringContent(JsonSerializer.Serialize(new ScoreApprovalRequestModel
                 {
                     ScoreId = scoreId
                 }), Encoding.UTF8, "application/json")
             );
         }
-        
+
         // perform team binding
         for (ulong testId = 1001; testId <= 1032; testId++)
         {
             await _httpClient.PatchAsync(
-                "/api/admin/bind-player-to-team",
+                "/api/teams/bind-player",
                 new StringContent(
                     JsonSerializer.Serialize(new PlayerBindingRequestModel
                     {
                         PlayerId = testId,
-                        TeamId = (int) ((testId - 1001) / 4) + 1
+                        TeamId = (int)((testId - 1001) / 4) + 1
                     }), Encoding.UTF8, "application/json")
             );
         }
-        
+
         var response = await _httpClient.GetAsync("/api/leaderboard/team");
         var content = await response.Content.ReadAsStringAsync();
-        
+
         var teams = JsonSerializer.Deserialize<List<Team>>(content, _jsonCaseInsensitive);
-        
+
         Assert.StrictEqual(8, teams!.Count);
-        
+
         teams.ForEach(team => team.Players.ToList().ForEach(player =>
             {
                 Assert.Null(player.Score!.Player);
                 Assert.Null(player.Team);
             }
         ));
-        
+
         var sortedTeams = teams
             .OrderByDescending(team => team.Players.Sum(p => p.Score!.Sub1 + p.Score.Sub2))
             .ThenByDescending(team => team.Players.Sum(p => p.Score!.DxScore1 + p.Score.DxScore2));
-        
+
         Assert.Equal(teams, sortedTeams);
-        
+
+        await gameDatabase.Database.EnsureDeletedAsync();
+    }
+
+
+    [Fact]
+    public async Task ScoreApprovalTest()
+    {
+        await using var scope = _factory.Services.CreateAsyncScope();
+
+        var gameDatabase = scope.ServiceProvider.GetService<GameDatabaseService>()!;
+        await gameDatabase.Database.EnsureCreatedAsync();
+
+        for (ulong testId = 1001; testId <= 1005; testId++)
+        {
+            await _httpClient.PostAsync(
+                "/api/player/score",
+                new StringContent(
+                    JsonSerializer.Serialize(new ScoreAdditionRequestModel
+                    {
+                        DiscordId = testId,
+                        FriendCode = 8090803305987,
+                        Sub1 = 101.0000,
+                        DxScore1 = 6969,
+                        Sub2 = 101.0000,
+                        DxScore2 = 7270,
+                        SchoolId = 123
+                    }), Encoding.UTF8, "application/json")
+            );
+        }
+
+        for (ulong testId = 1; testId <= 5; testId++)
+            await _httpClient.PatchAsync(
+                "/api/leaderboard/approve",
+                new StringContent(JsonSerializer.Serialize(new ScoreApprovalRequestModel
+                {
+                    ScoreId = testId
+                }), Encoding.UTF8, "application/json")
+            );
+
+        var approvedScores = gameDatabase.Scores.Where(score => score.IsAccepted == true);
+
+        Assert.StrictEqual(5, approvedScores.Count());
         await gameDatabase.Database.EnsureDeletedAsync();
     }
 }
