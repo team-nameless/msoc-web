@@ -2,7 +2,6 @@ using System.Reflection;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using MSOC.Backend.Middleware;
 using MSOC.Backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
