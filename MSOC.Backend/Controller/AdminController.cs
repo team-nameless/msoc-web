@@ -141,13 +141,13 @@ public class AdminController : ControllerBase
         if (player is null || team is null) return NotFound();
 
         if (team.Players.Count == 4) return BadRequest("Team is already full.");
-            
+
         team.Players.Add(player);
         _gameDatabase.SaveChanges();
-        
+
         return Ok();
     }
-    
+
     /// <summary>
     ///     Approve an entry on the leaderboard.
     /// </summary>
@@ -166,9 +166,9 @@ public class AdminController : ControllerBase
                         .SetProperty(s => s.IsAccepted, true)
                         .SetProperty(s => s.DateOfAcceptance, DateTime.Now)
             );
-        
+
         // TODO: Hit the SignalR endpoint to yell at the front end.
-        
+
         return Ok();
     }
 
