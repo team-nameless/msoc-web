@@ -11,6 +11,7 @@ public class GameDatabaseService : DbContext
 {
     public GameDatabaseService(DbContextOptions<GameDatabaseService> options) : base(options)
     {
+        Database.EnsureCreated();
     }
 
     public DbSet<Player> Players { get; set; }
