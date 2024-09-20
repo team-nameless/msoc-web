@@ -1,0 +1,114 @@
+[
+	{
+		"_id": 1,
+		"name": "Hidr0",
+		"img": "https://github.com/hidr0c/MSOC-image/blob/main/hidr0.png?raw=true",
+		"role": "Oraginzer and Leader",
+		"group": "Oraginzer"
+	},
+	{
+		"_id": 2,
+		"name": "Mune",
+		"img": "https://assets.mune.moe/images/avatars/105622113_p0-crop.png",
+		"role": "Live Stream Coordinator",
+		"group": "Partner"
+	},
+	{
+		"_id": 3,
+		"name": "HieuTrungMC",
+		"img": "https://mune.s-ul.eu/u9AYbn9fkAkeosod",
+		"role": "Tech Advisor/ Provider",
+		"group": "Partner"
+	},
+	{
+		"_id": 4,
+		"name": "10Shi",
+		"img": "https://cdn.discordapp.com/avatars/447282083811950595/2c1eb85edc73104a104e8c740bbf31c1.webp?size=1024&format=webp&width=0&height=384",
+		"role": "Advisor",
+		"group": "Partner"
+	},
+		{
+		"_id": 5,
+		"name": "Arknights VNS",
+		"img": "https://github.com/hidr0c/MSOC-image/blob/main/Sponsor-Logo---VNS-2.png?raw=true",
+		"role": "Sponsor",
+		"group": "Partner"
+	},
+	{
+		"_id": 6,
+		"name": "Đụt",
+		"img": "https://cdn.discordapp.com/avatars/295407610671136768/5ac7fe34c94443a081060832be491246.png?size=4096",
+		"role": "BE Leader",
+		"group": "Staff"
+	},
+	{
+		"_id": 7,
+		"name": "Mirera",
+		"img": "https://cdn.discordapp.com/guilds/735164080742072441/users/393638748627271680/avatars/b7df1f0c49d550b1418943098e6b1a6b.png?size=4096",
+		"role": "FE Leader",
+		"group": "Staff"
+	},
+	{
+		"_id": 8,
+		"name": "Foxeiz",
+		"img": "https://github.com/hidr0c/MSOC-image/blob/main/__suzuran_and_suzuran_arknights_drawn_by_pekopeco__sample-35aa7dbb64ea82ba6890cfffd7697740.jpg?raw=true",
+		"role": "BE coder",
+		"group": "Staff"
+	}
+	{
+		"_id": 9,
+		"name": "Cerberose",
+		"img": "https://cdn.discordapp.com/avatars/256048492349358091/10ab677f46d1facbd930a19694809276.webp?size=1024&format=webp&width=0&height=384",
+		"role": "FE coder",
+		"group": "Staff"
+	}
+	{
+		"_id": 10,
+		"name": "r. chômage",
+		"img": "https://github.com/hidr0c/MSOC-image/blob/main/rchomage.png?raw=true",
+		"role": "BE coder",
+		"group": "Staff"
+	}
+	{
+		"_id": 11,
+		"name": "shiinakochiya",
+		"img": "https://github.com/hidr0c/MSOC-image/blob/main/shiinakochiya.png?raw=true",
+		"role": "FE coder and PTG",
+		"group": "Staff"
+	}
+	{
+		"_id": 12,
+		"name": "HuySama",
+		"img": "https://cdn.discordapp.com/avatars/757110546448384031/2293b85e7e12d243d2769adec4b11181.webp?size=1024&format=webp&width=0&height=384",
+		"role": "Fe coder",
+		"group": "Staff"
+	}
+	{
+		"_id": 13,
+		"name": "Jerry Stephen",
+		"img": "https://cdn.discordapp.com/avatars/435958234503970818/13f0f67dc62fd5e675372b6c6f33bd30.webp?size=1024&format=webp&width=0&height=384",
+		"role": "Pooler and Website designer",
+		"group": "Staff"
+	}
+	{
+		"_id": 14,
+		"name": "AkaneOSK",
+		"img": "https://cdn.discordapp.com/avatars/380665668627988480/316ea90073d2a9868ee0b1f14c50a1a1.webp?size=1024&format=webp&width=0&height=384",
+		"role": "Pooler and Caster",
+		"group": "Staff"
+	}
+	{
+		"_id": 15,
+		"name": "Minax",
+		"img": "https://github.com/hidr0c/MSOC-image/blob/main/Minax.jpg?raw=true",
+		"role": "Video editor",
+		"group": "Staff"
+	}
+	{
+		"_id": 16,
+		"name": "Chullyko",
+		"img": "https://github.com/hidr0c/MSOC-image/blob/main/Chullyko.jpg?raw=true",
+		"role": "Designer",
+		"group": "Staff"
+	}
+]
