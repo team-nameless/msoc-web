@@ -2,13 +2,13 @@
 
 ![Image](https://raw.githubusercontent.com/team-nameless/msoc-web/main/MSOC/public/fac_1.png)
 
-Welcome to *MSOC* - *maimai Open Student Cup*.
+Welcome to *MSOC* - *maimai Student Open Cup*.
 
 This is `msoc-web` repository, containing **both** the user-facing and the back side of the MSOC website.
 
 **If you intend to register for MSOC, don't hestitate to smash the button below:**
   
-![Registration](https://img.shields.io/badge/Registration-Coming%20Soon!-gray?labelColor=fdaa48&style=for-the-badge)
+[![Registration](https://img.shields.io/badge/Registration-Open%20now!-green?labelColor=fdaa48&style=for-the-badge)](https://forms.gle/sS57JxQxB8Xy3sXk8)
 
 </div>
 
