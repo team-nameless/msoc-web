@@ -1,3 +1,7 @@
+# The end is nigh. Thanks for everything.
+
+------------------------------
+
 <div align="center" id="headline">
 
 ![Image](https://raw.githubusercontent.com/team-nameless/msoc-web/main/MSOC/public/fac_1.png)
